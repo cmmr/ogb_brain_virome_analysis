@@ -1,0 +1,131 @@
+---
+title: "Host Depletion Analysis"
+output: html_notebook
+---
+
+```{r}
+# load libraries
+library(here)
+library(data.table)
+library(stringr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(readxl)
+library(ggpubr)
+source(here::here("src/parse_sample_id.R"))
+```
+
+
+
+Load and parse metadata
+```{r}
+meta_dt <- read_excel(
+  here::here("metadata/samples/brain_pilot_fmt_pools_metadata.xlsx")
+) |>
+  filter(Pool == "p1733") |>
+  mutate(
+    condition = case_when(
+      grepl("-A", sample_ID) ~ "bulk DNA",
+      grepl("-B", sample_ID) ~ "host depleted DNA",
+      grepl("-C", sample_ID) ~ "bulk RNA",
+      TRUE ~ "other"
+    )
+  )
+```
+
+load tax profiles
+```{r}
+
+esv_tax_dt <- fread(
+  here::here("data/tax_profiles/esviritu_p1733.tax_profile.tsv"),
+  sep = "\t",
+  header = T
+) |>
+  filter(
+    read_count >= 10,
+    !genus %in% c(
+      "g__Betacoronavirus", "g__Gammaretrovirus", "g__Respirovirus",
+      "g__Lentivirus", "g__Alphacoronavirus", "g__Orthorubulavirus",
+      "g__Enterovirus"
+      ),
+    !species %in% c(
+      "s__Betapapillomavirus 1", "s__Betapapillomavirus 2", 
+      "s__Betapapillomavirus 3", "s__Human papillomavirus",
+      "s__Morbillivirus hominis", "s__Scythevirus dianchis",
+      "s__Lepidopteran ambidensovirus 1"
+      ),
+    !family %in% c(
+      "f__Circoviridae"
+    )
+    ) |>
+  separate(sample_ID, c("sample_ID", "Pool"), sep = "[.]")
+```
+
+merge metadata and tax profiles
+```{r}
+merge_dt <- merge(
+  esv_tax_dt,
+  meta_dt,
+  by = c("sample_ID", "Pool"),
+  all.y = T
+)
+```
+
+```{r}
+heatmap2_p <- merge_dt |>
+  mutate(
+    species = gsub("^s__", "", species),
+    family = gsub("^f__", "", family)
+    ) |>
+  complete(nesting(sample_ID, condition), nesting(species, family), fill = list(RPKMF=0)) |>
+  group_by(species, family, sample_ID, condition) |>
+  summarize(RPKMF = sum(RPKMF)) |>
+  filter(!is.na(condition), !is.na(family)) |>
+  ggplot(aes(
+    x = sample_ID,
+    y = species,
+    fill = log10(RPKMF)
+  )) +
+  geom_tile(color = "grey25") +
+  scale_fill_gradient2(
+    low = "#f5dfbc",
+    mid = "orange",
+    high = "purple",
+    na.value = "white"
+    #midpoint = midp
+    #limits = c(1, NA)
+  ) +
+  facet_grid(c(~family, ~condition),
+             scales = "free",
+             space = "free"
+             ) +
+  theme_bw() +
+  labs(
+    x = "Unique ID",
+    y = "Virus Species",
+    fill = "log10(RPKMF)"
+  ) +
+  theme(axis.text.x = 
+          element_text(angle = 90, 
+                       vjust = 0.5, 
+                       hjust=1),
+        legend.position = "bottom",
+        strip.text.y = element_text(angle = 0)) 
+
+heatmap2_p
+```
+
+```{r}
+ggsave(
+  here::here("charts/extraction_condition_heatmap1.pdf"),
+  heatmap2_p,
+  width = 9,
+  height = 6
+)
+```
+
+
+
+
+

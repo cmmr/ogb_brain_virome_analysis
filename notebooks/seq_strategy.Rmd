@@ -1,0 +1,194 @@
+---
+title: "Bulk vs hybrid capture, DNA and RNA"
+output: html_notebook
+---
+
+```{r}
+# load libraries
+library(here)
+library(data.table)
+library(stringr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(readxl)
+library(ggpubr)
+source(here::here("src/parse_sample_id.R"))
+```
+
+
+Load and parse metadata
+```{r}
+meta_dt <- read_excel(
+  here::here("metadata/samples/brain_hvp_fmt_pools_metadata.xlsx")
+)
+
+meta_dt <- as.data.table(meta_dt) |>
+  mutate(
+    sample_ID = gsub("QCNP", "QC-NP", sample_ID) #fix typo
+    ) |>
+  separate(
+    sample_description,
+    into = c("nucleic_acid", "tissue"),
+    sep = "-(?=[^-]+$)"
+  ) 
+
+meta_dt <- as.data.table(meta_dt) |> 
+  parse_sample_id() |>
+  mutate(patient_number = gsub("XXXXXX", "Neg. Ctrl", patient_number)) |>
+  filter(!grepl("CMMR", sample_ID)) #remove control samples
+```
+
+filter assemblies for read count/other and make tax_profile
+```{r}
+
+# MJT: I'm having to make manual "calls" for what's barcode spillover and contamination.
+# Barcode spillover (hyper-abundant viruses from nasal swabs):"g__Betacoronavirus", "g__Respirovirus", "g__Alphacoronavirus", "g__Orthorubulavirus" "g__Enterovirus"
+# contamination: "g__Gammaretrovirus", "g__Lentivirus", "s__Betapapillomavirus 1", "s__Betapapillomavirus 2",  "s__Betapapillomavirus 3", "s__Human papillomavirus"
+
+tax_file_list <- c(
+  here::here("data/tax_profiles/esviritu_p2055.tax_profile.tsv"),
+  here::here("data/tax_profiles/esviritu_p2058.tax_profile.tsv"),
+  here::here("data/tax_profiles/esviritu_p2059.tax_profile.tsv")
+)
+
+esv_tax_dt <- rbindlist(lapply(tax_file_list, fread))
+
+esv_tax_dt <- esv_tax_dt |>
+  filter(
+    read_count >= 10,
+    !genus %in% c(
+      "g__Betacoronavirus", "g__Gammaretrovirus", "g__Respirovirus",
+      "g__Lentivirus", "g__Alphacoronavirus", "g__Orthorubulavirus",
+      "g__Enterovirus"
+      ),
+    !species %in% c(
+      "s__Betapapillomavirus 1", "s__Betapapillomavirus 2", 
+      "s__Betapapillomavirus 3", "s__Human papillomavirus"
+      )
+    ) |>
+  separate(sample_ID, c("sample_ID", "Pool"), sep = "[.]")
+```
+
+merge metadata and tax profiles
+```{r}
+merge_dt <- merge(
+  esv_tax_dt,
+  meta_dt,
+  by = c("sample_ID", "Pool"),
+  all.y = T
+)
+```
+
+
+# Part 1: Sequencing Strategy Comparison
+
+summarize by patient/sample
+```{r}
+patient_abundance_sum_dt <- merge_dt |>
+  group_by(patient_number, tissue, note) |> # this is the unique patient/tissue/library condition
+  summarise(total_RPKMF = sum(RPKMF)) |>
+  mutate(total_RPKMF = replace_na(total_RPKMF, 0)) |>
+  arrange(patient_number, tissue, note)
+```
+
+plot summary
+```{r}
+sum_ab_p <- patient_abundance_sum_dt |>
+  ggplot(aes(x = tissue, y = total_RPKMF, fill = note)) +
+  geom_col(position = "dodge", color = "black") +
+  scale_fill_brewer(palette = "PRGn") +
+  facet_wrap(~patient_number, scales = "free_y") +
+  theme_bw() +
+    theme(axis.text.x = 
+            element_text(angle = 90, 
+                         vjust = 0.5, 
+                         hjust=1),
+          legend.position = "bottom",
+          strip.text.y = element_text(angle = 0)) 
+
+sum_ab_p
+```
+
+```{r}
+sum_heat_p <- patient_abundance_sum_dt |>
+  mutate(
+    condition = case_when(
+        note == "brain_dna_capture" ~ "Capture: DNA",
+        note == "brain_rna_capture" ~ "Capture: RNA",
+        note == "brain_dna_wgs" ~ "Bulk WGS: DNA",
+        TRUE ~ "other"
+      )
+    ) |>
+  ggplot(aes(x = condition, y = patient_number, fill = log10(total_RPKMF))) +
+  geom_tile(color = "black") +
+    scale_fill_gradient2(
+      low = "#f5dfbc",
+      mid = "orange",
+      high = "purple",
+      na.value = "white",
+      midpoint = 0.1
+      #limits = c(1e-7, NA)
+    ) +
+  facet_wrap(~tissue) +
+  labs(
+    y = "Patient ID",
+    title = "Sequencing Strategy: Total Virus Relative Abundance"
+  ) +
+  theme_bw() +
+    theme(axis.text.x = 
+            element_text(angle = 90, 
+                         vjust = 0.5, 
+                         hjust=1),
+          legend.position = "bottom",
+          strip.text.y = element_text(angle = 0)) 
+
+sum_heat_p
+```
+
+```{r}
+ggsave(
+  here::here("charts/bulk_v_hybrid_heatmap1.pdf"),
+  sum_heat_p,
+  width = 4,
+  height = 6
+)
+```
+
+```{r}
+anova_model <- aov(total_RPKMF ~ note, data = patient_abundance_sum_dt)
+summary(anova_model)
+```
+
+
+```{r}
+sum_box_p <- patient_abundance_sum_dt |>
+  mutate(
+    condition = case_when(
+        note == "brain_dna_capture" ~ "Capture: DNA",
+        note == "brain_rna_capture" ~ "Capture: RNA",
+        note == "brain_dna_wgs" ~ "Bulk WGS: DNA",
+        TRUE ~ "other"
+      )
+    ) |>
+  ggplot(aes(x = condition, y = total_RPKMF )) +
+  geom_point() +
+  facet_wrap(~tissue) +
+  stat_compare_means(
+    method = "anova"
+  ) +
+  theme_bw() +
+  theme(axis.text.x = 
+          element_text(angle = 90, 
+                       vjust = 0.5, 
+                       hjust=1),
+        legend.position = "bottom",
+        strip.text.y = element_text(angle = 0)) 
+
+sum_box_p
+```
+
+
+
+
+

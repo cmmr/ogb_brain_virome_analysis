@@ -1,0 +1,244 @@
+---
+title: "Hybrid capture and qPCR comparison"
+output: html_notebook
+---
+
+```{r}
+# load libraries
+library(here)
+library(data.table)
+library(stringr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(readxl)
+library(ggpubr)
+source(here::here("src/parse_sample_id.R"))
+library(irr)
+```
+
+load qPCR table
+```{r}
+qpcr_dt <- read_excel(
+  here::here("data/qPCR/Brain_tissue_qPCR.fmt2.xlsx")
+) |>
+  mutate(
+    Ct_1a = na_if(Ct_1a, "None"),
+    Ct_2a = na_if(Ct_2a, "None"),
+    Ct_2b = na_if(Ct_2b, "None")
+    )
+```
+
+
+get parvovirus b19 seq abundance
+```{r}
+
+tax_file_list <- c(
+  here::here("data/tax_profiles/esviritu_p2058.tax_profile.tsv")
+)
+
+esv_tax_dt <- rbindlist(lapply(tax_file_list, fread))
+
+esv_tax_dt <- esv_tax_dt |>
+  separate(sample_ID, c("sample_ID", "Pool"), sep = "[.]")
+
+b19_seq_dt <- esv_tax_dt |>
+  filter(
+    species == "s__Erythroparvovirus primate1" #parvovirus b19 species
+  )
+```
+
+```{r}
+tax_ids <- list(unique(b19_seq_dt$sample_ID))
+```
+
+```{r}
+pcr_ids <- list(unique(qpcr_dt$sample_ID))
+```
+
+```{r}
+setdiff(unlist(pcr_ids), unlist(tax_ids))
+```
+
+```{r}
+setdiff(unlist(tax_ids), unlist(pcr_ids))
+```
+
+```{r}
+merge_dt <- merge(
+  qpcr_dt,
+  b19_seq_dt,
+  by = "sample_ID",
+  all.x = T
+) |>
+  mutate(
+    RPKMF = replace_na(RPKMF, 0),
+    read_count = replace_na(read_count, 0)
+    )
+```
+
+```{r}
+yes_no_dt <- merge_dt |>
+  mutate(
+    seq_detect = case_when(
+      RPKMF <= 0 ~ FALSE,
+      TRUE ~ TRUE
+      ),
+    pcr_count = rowSums(!is.na(across(c(Ct_1a, Ct_2a, Ct_2b))))
+  ) |>
+  group_by(seq_detect, pcr_count) |>
+  summarize(n = n()) |>
+  ungroup() |>
+  complete(seq_detect, pcr_count, fill = list(n = 0))
+```
+
+```{r}
+pcr_seq1_p <- yes_no_dt |>
+  ggplot(aes(x = pcr_count, y = seq_detect)) +
+  geom_point(aes(size = n, color = n)) +
+  geom_text(aes(label = n)) +
+  scale_color_gradient(
+    high = "gold",
+    low = "grey90"
+  ) +
+  scale_size(range = c(0, 20)) +
+  theme_bw() +
+  labs(
+    x = "positive qPCR technical reps (out of 3)",
+    y = "positive by hybrid capture sequencing",
+    title = "Parvovirus B19 detection via qPCR and hybrid capture sequencing"
+  )
+pcr_seq1_p
+```
+
+```{r}
+ggsave(
+  here::here("charts/qPCR_reps_vs_seq_positive_b19.pdf"),
+  pcr_seq1_p,
+  width = 6.5,
+  height = 4.5
+)
+```
+
+```{r}
+sum_dt <- merge_dt |>
+  mutate(
+    seq_detect = case_when(
+      RPKMF <= 0 ~ FALSE,
+      TRUE ~ TRUE
+      ),
+    pcr_count = rowSums(!is.na(across(c(Ct_1a, Ct_2a, Ct_2b))))
+  ) |>
+  select(c(
+    sample_ID, tissue, patient_number,Ct_1a, Ct_2a, Ct_2b, RPKMF, seq_detect, pcr_count
+  ))
+```
+
+```{r}
+write.table(
+  sum_dt,
+  file = here::here("summary_tables/hybrid_capture_vs_qPCR_parvovirus_b19.tsv"),
+  sep = "\t",
+  row.names = F,
+  quote = F
+)
+```
+
+
+```{r}
+patient_yn_dt <- merge_dt |>
+  mutate(
+    seq_detect = case_when(
+      RPKMF <= 0 ~ FALSE,
+      TRUE ~ TRUE
+      ),
+    pcr_count = rowSums(!is.na(across(c(Ct_1a, Ct_2a, Ct_2b))))
+  ) |>
+  group_by(patient_number) |>
+  summarize(
+    n = n(),
+    n_seq_detect = sum(seq_detect, na.rm = TRUE),
+    pcr_total = sum(pcr_count)
+    ) |>
+  mutate(
+    pat_seq_detect = case_when(
+      n_seq_detect <= 0 ~ FALSE,
+      TRUE ~ TRUE
+      ),
+    pat_pcr_detect = case_when(
+      pcr_total <= 0 ~ FALSE,
+      TRUE ~ TRUE
+      )
+  ) |>
+  ungroup() |>
+  group_by(pat_seq_detect, pat_pcr_detect) |>
+  summarize(n = n()) |>
+  ungroup() |>
+  complete(pat_seq_detect, pat_pcr_detect, fill = list(n = 0))
+```
+
+```{r}
+pcr_seq_pat_p <- patient_yn_dt |>
+  ggplot(aes(x = pat_pcr_detect, y = pat_seq_detect)) +
+  geom_point(aes(size = n, color = n)) +
+  geom_text(aes(label = n)) +
+  scale_color_gradient(
+    high = "gold",
+    low = "grey90"
+  ) +
+  scale_size(range = c(0, 20)) +
+  theme_bw() +
+  labs(
+    x = "positive qPCR for donor",
+    y = "positive by hybrid capture sequencing for donor",
+    title = "Parvovirus B19 detection via qPCR and\nhybrid capture sequencing, by donor"
+  )
+pcr_seq_pat_p
+```
+
+```{r}
+ggsave(
+  here::here("charts/qPCR_reps_vs_seq_positive_b19.donor.pdf"),
+  pcr_seq_pat_p,
+  width = 5.5,
+  height = 4.5
+)
+```
+
+```{r}
+patient_yn_dt
+```
+
+
+```{r}
+test_dt <- merge_dt |>
+  mutate(
+    seq_detect = case_when(
+      RPKMF <= 0 ~ FALSE,
+      TRUE ~ TRUE
+      ),
+    pcr_count = rowSums(!is.na(across(c(Ct_1a, Ct_2a, Ct_2b))))
+  ) |>
+  group_by(patient_number) |>
+  summarize(
+    n = n(),
+    n_seq_detect = sum(seq_detect, na.rm = TRUE),
+    pcr_total = sum(pcr_count)
+    ) |>
+  mutate(
+    pat_seq_detect = case_when(
+      n_seq_detect <= 0 ~ FALSE,
+      TRUE ~ TRUE
+      ),
+    pat_pcr_detect = case_when(
+      pcr_total <= 0 ~ FALSE,
+      TRUE ~ TRUE
+      )
+  )
+```
+
+```{r}
+
+kappa2(test_dt |> select(pat_pcr_detect, pat_seq_detect))
+```
+
