@@ -14,7 +14,144 @@ library(ggplot2)
 library(readxl)
 library(ggpubr)
 source(here::here("src/parse_sample_id.R"))
+library(forcats)
 ```
+
+
+Load and parse metadata
+```{r}
+meta_pil_dt <- read_excel(
+  here::here("metadata/samples/brain_pilot_fmt_pools_metadata.xlsx")
+) |>
+  mutate(
+    condition = case_when(
+      grepl("-A", sample_ID) ~ "bulk DNA",
+      grepl("-B", sample_ID) ~ "host depleted DNA",
+      grepl("-C", sample_ID) ~ "bulk RNA",
+      TRUE ~ "other"
+    )
+  ) |>
+  mutate(tissue = gsub("Brain tissue/", "", sample_description)) |>
+  filter(condition %in% c("bulk DNA", "other")) #only look at hybrid capture DNA for this
+
+meta_hvp_dt <- read_excel(
+  here::here("metadata/samples/brain_hvp_fmt_pools_metadata.xlsx")
+) |>
+  mutate(tissue = gsub("Brain DNA - ", "", sample_description)) |>
+  filter(note == "brain_dna_capture") #only look at hybrid capture DNA for this
+
+meta_dt <- rbind(
+  meta_pil_dt |> select(c(sample_ID, Pool, tissue)),
+  meta_hvp_dt |> select(c(sample_ID, Pool, tissue))
+)
+```
+
+load tax tables
+```{r}
+tax_file_list <- c(
+  here::here("data/tax_profiles/esviritu_p2055.tax_profile.tsv"),
+  here::here("data/tax_profiles/esviritu_p2058.tax_profile.tsv"),
+  here::here("data/tax_profiles/esviritu_p2059.tax_profile.tsv"),
+  here::here("data/tax_profiles/esviritu_p1733.tax_profile.tsv"),
+  here::here("data/tax_profiles/esviritu_p1849.tax_profile.tsv"),
+  here::here("data/tax_profiles/esviritu_p1894.tax_profile.tsv")
+)
+
+
+esv_tax_dt <- rbindlist(lapply(tax_file_list, fread))
+
+esv_tax_dt <- esv_tax_dt |>
+  filter(
+    read_count >= 10,
+    !genus %in% c(
+      "g__Betacoronavirus", "g__Gammaretrovirus", "g__Respirovirus",
+      "g__Lentivirus", "g__Alphacoronavirus", "g__Orthorubulavirus",
+      "g__Enterovirus"
+      ),
+    !species %in% c(
+      "s__Betapapillomavirus 1", "s__Betapapillomavirus 2", 
+      "s__Betapapillomavirus 3", "s__Human papillomavirus",
+      "s__Triatovirus nigereginacellulae", "s__Lepidopteran ambidensovirus 1",
+      "s__Scythevirus dianchis", "s__Blattambidensovirus incertum1", 
+      "s__Pigeon aviadenovirus B", "s__Alphainfluenzavirus influenzae"
+      ),
+    !grepl("s__unclassified", species)
+    ) |>
+  separate(sample_ID, c("sample_ID", "Pool"), sep = "[.]") 
+```
+
+```{r}
+esv_tax_dt |>
+  distinct(species)
+```
+
+
+
+merge metadata and tax profiles
+```{r}
+merge_dt <- merge(
+  esv_tax_dt,
+  meta_dt,
+  by = c("sample_ID", "Pool"),
+  all.y = T
+) |>
+  filter(!grepl("CMMR", sample_ID)) # remove controls
+```
+
+```{r}
+heatmap2_p <- merge_dt |>
+  mutate(
+    species = gsub("^s__", "", species),
+    family = gsub("^f__", "", family)
+    ) |>
+  complete(nesting(sample_ID, tissue), nesting(species, family), fill = list(RPKMF=0)) |>
+  group_by(species, family, sample_ID, tissue) |>
+  summarize(RPKMF = sum(RPKMF)) |>
+  filter(!is.na(tissue), !is.na(family)) |>
+  ungroup() |>
+  group_by(species) |>
+  filter(sum(RPKMF != 0) >= 3) |>
+  ungroup() |>
+  ggplot(aes(
+    x = sample_ID,
+    y = fct_reorder(species, RPKMF, .fun = function(x) sum(x != 0), .desc = FALSE),
+    fill = log10(RPKMF)
+  )) +
+  geom_tile(color = "grey25") +
+  scale_fill_gradient2(
+    low = "#f5dfbc",
+    mid = "orange",
+    high = "purple",
+    na.value = "white",
+    midpoint = -1
+    #limits = c(1, NA)
+  ) +
+  facet_grid(c(~family, ~tissue),
+             scales = "free",
+             space = "free"
+             ) +
+  theme_bw() +
+  labs(
+    x = "Brain Specimens",
+    y = "Virus Species",
+    fill = "log10(RPKMF)"
+  ) +
+  theme(axis.text.x =element_blank(),
+        legend.position = "bottom",
+        strip.text.y = element_text(angle = 0)) 
+
+heatmap2_p
+```
+
+```{r}
+ggsave(
+  here::here("charts/brain_virome_atlas_heatmap1.pdf"),
+  heatmap2_p,
+  width = 12,
+  height = 5
+)
+```
+
 
 
 

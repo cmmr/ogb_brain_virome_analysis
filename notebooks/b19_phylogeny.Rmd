@@ -1,0 +1,239 @@
+---
+title: "parvovirus B19 tree"
+output: html_notebook
+---
+
+```{r}
+# load libraries
+library(here)
+library(data.table)
+library(stringr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(readxl)
+library(ggpubr)
+source(here::here("src/parse_sample_id.R"))
+library(treeio)
+library(ggtree)
+```
+
+```{r}
+jp1 <- read.jplace(here::here("data/b19_phylo/epang_attempt_3000nt/epa_result.jplace"))
+
+```
+
+```{r}
+ggtree(jp1, layout = "rectangular") + geom_tippoint(aes(size = nplace, color = nplace), alpha = 0.6)
+```
+
+```{r}
+tr1 <- read.tree(here::here("data/b19_phylo/epang_attempt_3000nt/epa_result.newick"))
+```
+
+```{r}
+ggtree(tr1, layout = "rectangular") + geom_tippoint(alpha = 0.6) +
+  geom_tiplab()
+```
+
+
+```{r}
+plc_all <- get.placements(jp1, by = "all") |> as_tibble()
+
+# Best placement only: one row per query, max LWR.
+plc <- get.placements(jp1, by = "best") |> as_tibble()
+
+glimpse(plc)
+```
+
+```{r}
+spread <- plc_all |>
+  group_by(name) |>
+  summarise(
+    n_edges     = n(),
+    top_lwr     = max(like_weight_ratio),
+    lwr_top2    = sum(sort(like_weight_ratio, decreasing = TRUE)[1:2], na.rm = TRUE),
+    .groups     = "drop"
+  ) |>
+  arrange(top_lwr)
+ 
+print(spread, n = 20)
+```
+
+
+```{r}
+edpl <- fread(here::here("data/b19_phylo/epang_attempt_3000nt/edpl_list.csv"))
+
+```
+
+```{r}
+gb_meta <- fread(
+  here::here("data/b19_phylo/parvovirus_b19.genbank.260715.tsv"),
+  sep = "\t",
+  header = T
+) |>
+  rename(label = Accession)
+```
+
+```{r}
+tipann <- tibble(label = tr1$tip.label) |>
+  left_join(gb_meta, by = "label") |>
+  mutate(Genotype = case_when(
+    is.na(Genotype) ~ "this study",
+    Genotype == "" ~ "unlabeled",
+    TRUE ~ toupper(Genotype)
+    ),
+    mlab2 = case_when(
+      grepl("_consensus", label) ~ gsub("NC_", "", label),
+      TRUE ~ label
+    ),
+    mlab2 = str_remove(mlab2, "^[^_]*_"),
+    mlab2 = gsub("_consensus$", "", mlab2),
+    mlab2 = case_when(
+      grepl("XX-0", mlab2) ~ str_replace(mlab2, "^([^-]*-[^-]*).*$", "\\1"),
+      grepl("HELTHY|MODAD|SEVAD|H-H", mlab2) ~ str_remove(mlab2, "\\..*"),
+      TRUE ~ mlab2
+    )
+  ) 
+
+```
+
+```{r}
+donor_meta_dt <- read_excel(
+  here::here("metadata/donors/simple_donor_meta1.xlsx")
+)
+
+tip_merge <- merge(
+  tipann,
+  donor_meta_dt,
+  by.x = "mlab2",
+  by.y = "year_patient",
+  all.x = T
+) |>
+  mutate(big_label = paste(Collection_Date, AD_status, age_at_death, sep = " ")) |>
+  relocate(mlab2, .after = last_col())
+```
+
+
+
+
+
+```{r}
+
+p <- ggtree(tr1, layout = "roundrect", size = 0.3) %<+% tip_merge
+
+p1 <- p +
+  geom_tippoint(
+    aes(color = Genotype),
+    alpha = 0.8
+  ) +
+  geom_tiplab(aes(label = Genotype),
+              size = 2, offset = 0.002, align = FALSE) +
+  theme_tree2() +
+  scale_color_manual(
+    values = c("cadetblue", "lightblue",
+               "purple", "orangered",
+               "grey")
+  )
+
+p1
+```
+
+
+
+
+```{r}
+jp2 <- read.jplace(here::here("data/b19_phylo/epang_attempt_1000nt/epa_result.jplace"))
+
+```
+
+```{r}
+ggtree(jp2, layout = "rectangular") + geom_tippoint(aes(size = nplace, color = nplace), alpha = 0.6)
+```
+
+
+```{r}
+tr2 <- read.tree(here::here("data/b19_phylo/epang_attempt_1000nt/epa_result.newick"))
+```
+
+```{r}
+ggtree(tr2, layout = "rectangular") + geom_tippoint(alpha = 0.6) +
+  geom_tiplab()
+```
+
+
+```{r}
+tipanno <- tibble(label = tr2$tip.label) |>
+  left_join(gb_meta, by = "label") |>
+  mutate(Genotype = case_when(
+    is.na(Genotype) ~ "this study",
+    Genotype == "" ~ "GenBank unlabeled",
+    TRUE ~ toupper(Genotype)
+    ),
+    mlab2 = case_when(
+      grepl("_consensus", label) ~ gsub("NC_", "", label),
+      TRUE ~ label
+    ),
+    mlab2 = str_remove(mlab2, "^[^_]*_"),
+    mlab2 = gsub("_consensus$", "", mlab2),
+    mlab2 = case_when(
+      grepl("XX-0", mlab2) ~ str_replace(mlab2, "^([^-]*-[^-]*).*$", "\\1"),
+      grepl("HELTHY|MODAD|SEVAD|H-H", mlab2) ~ str_remove(mlab2, "\\..*"),
+      TRUE ~ mlab2
+    )
+  ) 
+
+```
+
+```{r}
+tip_mergeo <- merge(
+  tipanno,
+  donor_meta_dt,
+  by.x = "mlab2",
+  by.y = "year_patient",
+  all.x = T
+) |>
+  mutate(big_label = paste(Collection_Date, AD_status, age_at_death, sep = " ")) |>
+  relocate(mlab2, .after = last_col())
+```
+
+```{r}
+is.waive <- function(x) inherits(x, "waiver")
+
+po <- ggtree(tr2, layout = "roundrect", size = 0.3) %<+% tip_mergeo
+
+po1 <- po +
+  geom_tippoint(
+    aes(color = Genotype),
+    alpha = 0.8
+  ) +
+  #geom_tiplab(aes(label = big_label),
+  #            size = 2, offset = 0.002, align = FALSE) +
+  theme_tree2() +
+  scale_color_manual(
+    values = c("cadetblue", "lightblue",
+               "purple", "grey", "#9B6981"
+               )
+  )
+
+po1
+```
+
+```{r}
+ggsave(
+  here::here("charts/parvo_b19_tree_1000nt_1.pdf"),
+  po1,
+  width = 9,
+  height = 7
+)
+```
+
+
+
+
+
+
+
+
+
+
