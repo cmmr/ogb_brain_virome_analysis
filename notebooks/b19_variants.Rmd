@@ -1,0 +1,173 @@
+---
+title: "Parvovirus B19 variant analysis"
+output: html_notebook
+---
+
+```{r}
+# load libraries
+library(here)
+library(data.table)
+library(stringr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(readxl)
+library(ggpubr)
+source(here::here("src/parse_sample_id.R"))
+```
+
+
+```{r}
+varmint_files <- list.files(
+  path = here::here("data/b19_variants/"),
+  pattern = "*tsv",
+  full.names = T
+)
+
+rm(varm_dt)
+for (tsv in varmint_files) {
+  stem1 <- basename(tsv)
+  
+  if (exists("varm_dt")) {
+    temp_dt <- fread(
+      tsv,
+      sep = "\t",
+      header = T
+    ) |> 
+      mutate(file = stem1)
+    varm_dt <- rbind(varm_dt, temp_dt)
+  } else {
+    varm_dt <- fread(
+      tsv,
+      sep = "\t",
+      header = T
+    ) |> 
+      mutate(file = stem1)
+  }
+}
+
+varm_dt <- varm_dt |>
+  mutate(
+    sample_ID = gsub(".b19.variant_stats.tsv", "", file)
+  ) |>
+  separate_wider_delim(
+    cols = sample_ID, 
+    delim = ".", 
+    names = c("sample_ID", "Pool")
+  ) |>
+  filter(
+    Pool %in% c("p1733", "p1849", "p1894", "p2058"),
+    !grepl("Hybrid", sample_ID),
+    !grepl("-B$", sample_ID)
+  ) |>
+  mutate(
+    join_col = case_when(
+      grepl("XX-0", sample_ID) ~ str_replace(sample_ID, "^([^-]*-[^-]*).*$", "\\1"),
+      #grepl("HELTHY|MODAD|SEVAD", sample_ID) ~ gsub("-A$", "", sample_ID),
+      TRUE ~ sample_ID
+    )
+  )
+```
+
+```{r}
+head(varm_dt)
+```
+
+```{r}
+varm_dt |> distinct(join_col)
+```
+
+
+
+
+```{r}
+donor_meta_dt <- read_excel(
+  here::here("metadata/donors/simple_donor_meta1.xlsx")
+)
+```
+
+```{r}
+anti_join(
+  varm_dt,
+  donor_meta_dt,
+  by = "join_col"
+)
+```
+
+
+```{r}
+merge_dt <- merge(
+  varm_dt,
+  donor_meta_dt,
+  by = "join_col"
+) |>
+  mutate(uid = paste0(patient_ID, ".", sample_ID))
+```
+
+```{r}
+head(merge_dt)
+```
+
+```{r}
+merge_dt |>
+  filter(AF >0, AF < 1)
+```
+
+
+
+```{r}
+muts_p <- merge_dt |>
+  mutate(
+    alt_seq = case_when(
+      allele_type == "alt" & AF < 0.5 ~ "",
+      is.na(alt_seq) ~ "",
+      TRUE ~ alt_seq
+    )
+  ) |>
+  ggplot(aes(x = pos, y = uid, fill = alt_seq)) +
+  geom_tile() +
+  scale_fill_manual(values = c(
+    "grey75", "#52777A","#542437","#C02942","#D95B43","#ECD078"
+  )) +
+  facet_grid(rows = vars(patient_ID), cols = vars(contig), scale = "free_y", space = "free") +
+  theme_bw() +
+  theme(
+    panel.spacing = unit(0, "lines"),
+    axis.text.y = element_blank(),
+    strip.text.y = element_text(angle = 0),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank()
+    )
+muts_p
+```
+
+
+```{r}
+ggsave(
+  here::here("charts/b19_mutation_plot1.pdf"),
+  muts_p,
+  height = 12,
+  width = 8
+)
+
+ggsave(
+  here::here("charts/b19_mutation_plot1.png"),
+  muts_p,
+  height = 12,
+  width = 8
+)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+

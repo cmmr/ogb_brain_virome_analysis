@@ -1,0 +1,403 @@
+contig	pos	var_type	allele_type	ref_seq	alt_seq	depth	allele_count	AF	allele_avgq	allele_avgmq	ref_fwd	ref_rev	alt_fwd	alt_rev	strand_bias_p	ts_tv	VCF_PASS	is_coding	gene	transcript_id	strand	codon_ref	codon_alt	aa_ref	aa_alt	codon_index	codon_pos	effect
+ON023025.1	1235	REF	ref	T		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1236	REF	ref	A		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1237	REF	ref	A		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1238	REF	ref	A		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1239	REF	ref	G		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1240	REF	ref	T		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1241	REF	ref	T		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1242	REF	ref	T		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1243	REF	ref	C		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1244	REF	ref	A		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1245	REF	ref	A		15	15	1.0	38.93333333333333	24.6	15	0						false										
+ON023025.1	1246	REF	ref	A		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1247	REF	ref	C		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1248	REF	ref	A		15	0	0.0			0	0						false										
+ON023025.1	1248	SNV	alt	A	T	15	15	1.0	40.0	24.6	0	0	15	0	1.0	Tv		true	NS1	gene-NS1	+	ACA	ACT	T	T	218	3	synonymous
+ON023025.1	1249	REF	ref	A		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1250	REF	ref	T		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1251	REF	ref	G		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1252	REF	ref	G		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1253	REF	ref	T		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1254	REF	ref	A		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1255	REF	ref	A		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1256	REF	ref	A		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1257	REF	ref	T		15	0	0.0			0	0						false										
+ON023025.1	1257	SNV	alt	T	C	15	15	1.0	36.8	24.6	0	0	15	0	1.0	Ts		true	NS1	gene-NS1	+	AAT	AAC	N	N	221	3	synonymous
+ON023025.1	1258	REF	ref	T		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1259	REF	ref	G		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1260	REF	ref	G		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1261	REF	ref	T		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1262	REF	ref	T		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1263	REF	ref	A		15	0	0.0			0	0						false										
+ON023025.1	1263	SNV	alt	A	G	15	15	1.0	38.93333333333333	24.6	0	0	15	0	1.0	Ts		true	NS1	gene-NS1	+	TTA	TTG	L	L	223	3	synonymous
+ON023025.1	1264	REF	ref	T		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1265	REF	ref	G		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1266	REF	ref	T		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1267	REF	ref	G		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1268	REF	ref	A		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1269	REF	ref	A		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1270	REF	ref	A		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1271	REF	ref	A		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1272	REF	ref	C		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1273	REF	ref	A		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1274	REF	ref	G		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1275	REF	ref	A		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1276	REF	ref	G		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1277	REF	ref	T		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1278	REF	ref	G		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1279	REF	ref	T		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1280	REF	ref	T		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1281	REF	ref	T		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1282	REF	ref	A		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1283	REF	ref	C		15	15	1.0	40.0	24.6	15	0						false										
+ON023025.1	1328	REF	ref	T		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1329	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1330	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1331	REF	ref	G		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1332	REF	ref	C		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1333	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1334	REF	ref	G		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1335	REF	ref	T		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1336	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1337	REF	ref	G		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1338	REF	ref	T		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1339	REF	ref	C		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1340	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1341	REF	ref	T		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1342	REF	ref	A		15	15	1.0	38.93333333333333	25.466666666666665	0	15						false										
+ON023025.1	1343	REF	ref	G		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1344	REF	ref	T		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1345	REF	ref	G		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1346	REF	ref	G		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1347	REF	ref	G		15	0	0.0			0	0						false										
+ON023025.1	1347	SNV	alt	G	A	15	15	1.0	38.93333333333333	25.466666666666665	0	0	0	15	1.0	Ts		true	NS1	gene-NS1	+	GGG	GGA	G	G	251	3	synonymous
+ON023025.1	1348	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1349	REF	ref	G		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1350	REF	ref	T		14	14	1.0	40.0	26.0	0	14						false										
+ON023025.1	1351	REF	ref	T		15	15	1.0	38.93333333333333	25.466666666666665	0	15						false										
+ON023025.1	1352	REF	ref	T		14	14	1.0	38.857142857142854	25.428571428571427	0	14						false										
+ON023025.1	1353	REF	ref	T		14	14	1.0	40.0	25.428571428571427	0	14						false										
+ON023025.1	1354	REF	ref	C		15	15	1.0	38.93333333333333	25.466666666666665	0	15						false										
+ON023025.1	1355	REF	ref	A		15	15	1.0	38.93333333333333	25.466666666666665	0	15						false										
+ON023025.1	1356	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1357	REF	ref	A		15	15	1.0	38.93333333333333	25.466666666666665	0	15						false										
+ON023025.1	1358	REF	ref	T		14	14	1.0	40.0	25.428571428571427	0	14						false										
+ON023025.1	1359	REF	ref	A		14	0	0.0			0	0						false										
+ON023025.1	1359	SNV	alt	A	T	14	14	1.0	38.857142857142854	25.428571428571427	0	0	0	14	1.0	Tv		true	NS1	gene-NS1	+	ATA	ATT	I	I	255	3	synonymous
+ON023025.1	1360	REF	ref	C		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1361	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1362	REF	ref	A		15	15	1.0	38.93333333333333	25.466666666666665	0	15						false										
+ON023025.1	1363	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1364	REF	ref	G		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1365	REF	ref	T		15	15	1.0	38.93333333333333	25.466666666666665	0	15						false										
+ON023025.1	1366	REF	ref	G		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1367	REF	ref	C		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1368	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1369	REF	ref	T		15	0	0.0			0	0						false										
+ON023025.1	1369	SNV	alt	T	C	15	15	1.0	40.0	25.466666666666665	0	0	0	15	1.0	Ts		true	NS1	gene-NS1	+	TTA	CTA	L	L	259	1	synonymous
+ON023025.1	1370	REF	ref	T		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1371	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1372	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1373	REF	ref	A		14	14	1.0	40.0	25.428571428571427	0	14						false										
+ON023025.1	1374	REF	ref	G		15	0	0.0			0	0						false										
+ON023025.1	1374	SNV	alt	G	A	15	15	1.0	38.93333333333333	25.466666666666665	0	0	0	15	1.0	Ts		true	NS1	gene-NS1	+	AAG	AAA	K	K	260	3	synonymous
+ON023025.1	1375	REF	ref	C		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1376	REF	ref	T		14	14	1.0	40.0	25.428571428571427	0	14						false										
+ON023025.1	1377	REF	ref	A		15	15	1.0	38.93333333333333	25.466666666666665	0	15						false										
+ON023025.1	1378	REF	ref	G		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1379	REF	ref	C		15	15	1.0	38.93333333333333	25.466666666666665	0	15						false										
+ON023025.1	1380	REF	ref	T		15	0	0.0			0	0						false										
+ON023025.1	1380	SNV	alt	T	A	15	15	1.0	38.93333333333333	25.466666666666665	0	0	0	15	1.0	Tv		true	NS1	gene-NS1	+	GCT	GCA	A	A	262	3	synonymous
+ON023025.1	1381	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1382	REF	ref	T		15	15	1.0	38.93333333333333	25.466666666666665	0	15						false										
+ON023025.1	1383	REF	ref	T		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1384	REF	ref	T		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1385	REF	ref	A		15	15	1.0	38.93333333333333	25.466666666666665	0	15						false										
+ON023025.1	1386	REF	ref	T		15	15	1.0	38.93333333333333	25.466666666666665	0	15						false										
+ON023025.1	1387	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1388	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1389	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1390	REF	ref	G		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1391	REF	ref	C		15	15	1.0	38.93333333333333	25.466666666666665	0	15						false										
+ON023025.1	1392	REF	ref	T		15	0	0.0			0	0						false										
+ON023025.1	1392	SNV	alt	T	A	15	15	1.0	40.0	25.466666666666665	0	0	0	15	1.0	Tv		true	NS1	gene-NS1	+	GCT	GCA	A	A	266	3	synonymous
+ON023025.1	1393	REF	ref	A		15	15	1.0	38.93333333333333	25.466666666666665	0	15						false										
+ON023025.1	1394	REF	ref	C		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1395	REF	ref	T		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1396	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1397	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1398	REF	ref	C		15	0	0.0			0	0						false										
+ON023025.1	1398	SNV	alt	C	T	15	15	1.0	40.0	25.466666666666665	0	0	0	15	1.0	Ts		true	NS1	gene-NS1	+	AAC	AAT	N	N	268	3	synonymous
+ON023025.1	1399	REF	ref	T		15	15	1.0	37.86666666666667	25.466666666666665	0	15						false										
+ON023025.1	1400	REF	ref	T		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1401	REF	ref	A		15	0	0.0			0	0						false										
+ON023025.1	1401	SNV	alt	A	G	15	15	1.0	40.0	25.466666666666665	0	0	0	15	1.0	Ts		true	NS1	gene-NS1	+	TTA	TTG	L	L	269	3	synonymous
+ON023025.1	1402	REF	ref	G		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1403	REF	ref	T		14	14	1.0	40.0	25.428571428571427	0	14						false										
+ON023025.1	1404	REF	ref	T		15	0	0.0			0	0						false										
+ON023025.1	1404	SNV	alt	T	G	15	15	1.0	40.0	25.466666666666665	0	0	0	15	1.0	Tv		true	NS1	gene-NS1	+	GTT	GTG	V	V	270	3	synonymous
+ON023025.1	1405	REF	ref	C		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1406	REF	ref	C		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1407	REF	ref	T		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1408	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1409	REF	ref	C		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1410	REF	ref	T		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1411	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1412	REF	ref	G		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1413	REF	ref	T		15	0	0.0			0	0						false										
+ON023025.1	1413	SNV	alt	T	C	15	15	1.0	38.93333333333333	25.466666666666665	0	0	0	15	1.0	Ts		true	NS1	gene-NS1	+	AGT	AGC	S	S	273	3	synonymous
+ON023025.1	1414	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1415	REF	ref	C		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1416	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1417	REF	ref	T		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1418	REF	ref	T		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1419	REF	ref	T		15	15	1.0	38.93333333333333	25.466666666666665	0	15						false										
+ON023025.1	1420	REF	ref	T		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1421	REF	ref	T		15	15	1.0	37.86666666666667	25.466666666666665	0	15						false										
+ON023025.1	1422	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1423	REF	ref	A		15	0	0.0			0	0						false										
+ON023025.1	1423	SNV	alt	A	T	15	15	1.0	40.0	25.466666666666665	0	0	0	15	1.0	Tv		true	NS1	gene-NS1	+	ATG	TTG	M	L	277	1	missense
+ON023025.1	1424	REF	ref	T		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1425	REF	ref	G		15	15	1.0	38.93333333333333	25.466666666666665	0	15						false										
+ON023025.1	1426	REF	ref	C		15	15	1.0	38.93333333333333	25.466666666666665	0	15						false										
+ON023025.1	1427	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1428	REF	ref	T		15	15	1.0	38.93333333333333	25.466666666666665	0	15						false										
+ON023025.1	1429	REF	ref	T		15	0	0.0			0	0						false										
+ON023025.1	1429	SNV	alt	T	A	15	15	1.0	40.0	25.466666666666665	0	0	0	15	1.0	Tv		true	NS1	gene-NS1	+	TCA	ACA	S	T	279	1	missense
+ON023025.1	1430	REF	ref	C		15	15	1.0	38.93333333333333	25.466666666666665	0	15						false										
+ON023025.1	1431	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1432	REF	ref	G		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1433	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1434	REF	ref	C		15	15	1.0	38.93333333333333	25.466666666666665	0	15						false										
+ON023025.1	1435	REF	ref	T		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1436	REF	ref	T		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1437	REF	ref	T		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1438	REF	ref	G		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1439	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1440	REF	ref	G		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1441	REF	ref	C		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1442	REF	ref	A		15	15	1.0	40.0	25.466666666666665	0	15						false										
+ON023025.1	1443	REF	ref	G		15	15	1.0	38.93333333333333	25.466666666666665	0	15						false										
+ON023025.1	1444	REF	ref	G		15	15	1.0	38.93333333333333	25.466666666666665	0	15						false										
+ON023025.1	1445	REF	ref	T		15	15	1.0	38.93333333333333	25.466666666666665	0	15						false										
+ON023025.1	1446	REF	ref	T		14	14	1.0	40.0	25.428571428571427	0	14						false										
+ON023025.1	1447	REF	ref	A		15	15	1.0	38.93333333333333	25.466666666666665	0	15						false										
+ON023025.1	1982	REF	ref	G		10	10	1.0	38.4	60.0	10	0						false										
+ON023025.1	1983	REF	ref	G		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	1984	REF	ref	C		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	1985	REF	ref	T		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	1986	REF	ref	A		10	0	0.0			0	0						false										
+ON023025.1	1986	SNV	alt	A	T	10	10	1.0	40.0	60.0	0	0	10	0	1.0	Tv		true	NS1	gene-NS1	+	CTA	CTT	L	L	464	3	synonymous
+ON023025.1	1987	REF	ref	A		9	9	1.0	40.0	60.0	9	0						false										
+ON023025.1	1988	REF	ref	C		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	1989	REF	ref	T		10	0	0.0			0	0						false										
+ON023025.1	1989	SNV	alt	T	A	10	10	1.0	40.0	60.0	0	0	10	0	1.0	Tv		true	NS1	gene-NS1	+	ACT	ACA	T	T	465	3	synonymous
+ON023025.1	1990	REF	ref	T		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	1991	REF	ref	G		10	10	1.0	38.4	60.0	10	0						false										
+ON023025.1	1992	REF	ref	G		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	1993	REF	ref	T		10	10	1.0	38.4	60.0	10	0						false										
+ON023025.1	1994	REF	ref	G		10	10	1.0	38.4	60.0	10	0						false										
+ON023025.1	1995	REF	ref	T		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	1996	REF	ref	A		10	10	1.0	38.4	60.0	10	0						false										
+ON023025.1	1997	REF	ref	A		10	10	1.0	38.4	60.0	10	0						false										
+ON023025.1	1998	REF	ref	T		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	1999	REF	ref	G		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	2000	REF	ref	C		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	2001	REF	ref	A		10	10	1.0	38.4	60.0	10	0						false										
+ON023025.1	2002	REF	ref	C		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	2003	REF	ref	A		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	2004	REF	ref	A		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	2005	REF	ref	A		10	10	1.0	38.4	60.0	10	0						false										
+ON023025.1	2006	REF	ref	G		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	2007	REF	ref	C		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	2008	REF	ref	T		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	2009	REF	ref	G		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	2010	REF	ref	G		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	2011	REF	ref	A		10	0	0.0			0	0						false										
+ON023025.1	2011	SNV	alt	A	G	10	10	1.0	40.0	60.0	0	0	10	0	1.0	Ts		true	NS1	gene-NS1	+	AAC	GAC	N	D	473	1	missense
+ON023025.1	2012	REF	ref	A		9	9	1.0	40.0	60.0	9	0						false										
+ON023025.1	2013	REF	ref	C		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	2014	REF	ref	C		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	2015	REF	ref	A		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	2016	REF	ref	C		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	2017	REF	ref	T		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	2018	REF	ref	A		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	2019	REF	ref	T		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	2020	REF	ref	G		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	2021	REF	ref	A		10	10	1.0	38.4	60.0	10	0						false										
+ON023025.1	2022	REF	ref	A		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	2023	REF	ref	A		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	2024	REF	ref	A		10	10	1.0	38.4	60.0	10	0						false										
+ON023025.1	2025	REF	ref	C		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	2026	REF	ref	T		10	10	1.0	38.4	60.0	10	0						false										
+ON023025.1	2027	REF	ref	G		9	9	1.0	40.0	60.0	9	0						false										
+ON023025.1	2028	REF	ref	G		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	2029	REF	ref	G		10	10	1.0	40.0	60.0	10	0						false										
+ON023025.1	2030	REF	ref	C		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2031	REF	ref	A		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2032	REF	ref	A		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2033	REF	ref	T		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2034	REF	ref	A		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2035	REF	ref	A		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2036	REF	ref	A		10	10	1.0	76.8	60.0	6	4						false										
+ON023025.1	2037	REF	ref	C		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2038	REF	ref	T		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2039	REF	ref	A		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2040	REF	ref	C		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2041	REF	ref	A		10	10	1.0	75.2	60.0	6	4						false										
+ON023025.1	2042	REF	ref	C		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2043	REF	ref	G		10	0	0.0			0	0						false										
+ON023025.1	2043	SNV	alt	G	T	10	10	1.0	80.0	60.0	0	0	6	4	1.0	Tv		true	NS1	gene-NS1	+	ACG	ACT	T	T	483	3	synonymous
+ON023025.1	2044	REF	ref	T		10	10	1.0	76.9	60.0	6	4						false										
+ON023025.1	2045	REF	ref	T		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2046	REF	ref	T		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2047	REF	ref	G		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2048	REF	ref	A		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2049	REF	ref	T		10	10	1.0	76.8	60.0	6	4						false										
+ON023025.1	2050	REF	ref	T		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2051	REF	ref	T		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2052	REF	ref	C		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2053	REF	ref	C		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2054	REF	ref	C		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2055	REF	ref	T		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2056	REF	ref	G		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2057	REF	ref	G		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2058	REF	ref	A		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2059	REF	ref	A		10	10	1.0	75.2	60.0	6	4						false										
+ON023025.1	2060	REF	ref	T		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2061	REF	ref	A		10	0	0.0			0	0						false										
+ON023025.1	2061	SNV	alt	A	T	10	10	1.0	78.4	60.0	0	0	6	4	1.0	Tv		true	NS1	gene-NS1	+	ATA	ATT	I	I	489	3	synonymous
+ON023025.1	2062	REF	ref	A		10	10	1.0	76.9	60.0	6	4						false										
+ON023025.1	2063	REF	ref	A		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2064	REF	ref	T		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2065	REF	ref	G		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2066	REF	ref	C		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2067	REF	ref	A		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2068	REF	ref	G		10	10	1.0	75.3	60.0	6	4						false										
+ON023025.1	2069	REF	ref	A		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2070	REF	ref	T		10	10	1.0	76.9	60.0	6	4						false										
+ON023025.1	2071	REF	ref	G		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2072	REF	ref	C		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2073	REF	ref	C		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2074	REF	ref	C		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2075	REF	ref	T		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2076	REF	ref	C		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2077	REF	ref	C		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2078	REF	ref	A		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2079	REF	ref	C		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2080	REF	ref	C		10	10	1.0	76.9	60.0	6	4						false										
+ON023025.1	2081	REF	ref	C		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2082	REF	ref	A		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2083	REF	ref	G		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2084	REF	ref	A		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2085	REF	ref	C		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2086	REF	ref	C		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2087	REF	ref	T		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2088	REF	ref	C		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2089	REF	ref	C		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2090	REF	ref	A		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2091	REF	ref	A		10	10	1.0	76.9	60.0	6	4						false										
+ON023025.1	2092	REF	ref	A		10	10	1.0	76.9	60.0	6	4						false										
+ON023025.1	2093	REF	ref	C		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2094	REF	ref	C		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2095	REF	ref	G		10	0	0.0			0	0						false										
+ON023025.1	2095	SNV	alt	G	A	10	10	1.0	78.4	60.0	0	0	6	4	1.0	Ts		true	NS1	gene-NS1	+	GTC	ATC	V	I	501	1	missense
+ON023025.1	2095	SNV	alt	G	A	10	10	1.0	78.4	60.0	0	0	6	4	1.0	Ts		true	NS1	gene-NS1	+	CCG	CCA	P	P	683	3	synonymous
+ON023025.1	2096	REF	ref	T		10	0	0.0			0	0						false										
+ON023025.1	2096	SNV	alt	T	C	10	10	1.0	78.4	60.0	0	0	6	4	1.0	Ts		true	NS1	gene-NS1	+	GTC	GCC	V	A	501	2	missense
+ON023025.1	2096	SNV	alt	T	C	10	10	1.0	78.4	60.0	0	0	6	4	1.0	Ts		true	NS1	gene-NS1	+	TCC	CCC	S	P	684	1	missense
+ON023025.1	2097	REF	ref	C		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2098	REF	ref	C		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2099	REF	ref	C		10	10	1.0	76.8	60.0	6	4						false										
+ON023025.1	2100	REF	ref	C		10	0	0.0			0	0						false										
+ON023025.1	2100	SNV	alt	C	A	10	10	1.0	76.9	60.0	0	0	6	4	1.0	Tv		true	NS1	gene-NS1	+	CCC	CCA	P	P	502	3	synonymous
+ON023025.1	2100	SNV	alt	C	A	10	10	1.0	76.9	60.0	0	0	6	4	1.0	Tv		true	NS1	gene-NS1	+	CCA	CAA	P	Q	685	2	missense
+ON023025.1	2101	REF	ref	A		10	10	1.0	76.9	60.0	6	4						false										
+ON023025.1	2102	REF	ref	T		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2103	REF	ref	T		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2104	REF	ref	G		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2105	REF	ref	T		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2106	REF	ref	C		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2107	REF	ref	G		10	0	0.0			0	0						false										
+ON023025.1	2107	SNV	alt	G	A	10	10	1.0	76.9	60.0	0	0	6	4	1.0	Ts		true	NS1	gene-NS1	+	GCA	ACA	A	T	505	1	missense
+ON023025.1	2107	SNV	alt	G	A	10	10	1.0	76.9	60.0	0	0	6	4	1.0	Ts		true	NS1	gene-NS1	+	TCG	TCA	S	S	687	3	synonymous
+ON023025.1	2108	REF	ref	C		10	10	1.0	75.2	60.0	6	4						false										
+ON023025.1	2109	REF	ref	A		10	10	1.0	76.9	60.0	6	4						false										
+ON023025.1	2110	REF	ref	G		10	10	1.0	76.8	60.0	6	4						false										
+ON023025.1	2111	REF	ref	A		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2112	REF	ref	C		10	10	1.0	76.9	60.0	6	4						false										
+ON023025.1	2113	REF	ref	A		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2114	REF	ref	C		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2115	REF	ref	C		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2116	REF	ref	A		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2117	REF	ref	G		10	10	1.0	76.8	60.0	6	4						false										
+ON023025.1	2118	REF	ref	T		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2119	REF	ref	G		10	0	0.0			0	0						false										
+ON023025.1	2119	SNV	alt	G	A	10	10	1.0	78.4	60.0	0	0	6	4	1.0	Ts		true	NS1	gene-NS1	+	GTC	ATC	V	I	509	1	missense
+ON023025.1	2119	SNV	alt	G	A	10	10	1.0	78.4	60.0	0	0	6	4	1.0	Ts		true	NS1	gene-NS1	+	GTG	GTA	V	V	691	3	synonymous
+ON023025.1	2120	REF	ref	T		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2121	REF	ref	C		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2122	REF	ref	A		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2123	REF	ref	G		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2124	REF	ref	C		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2125	REF	ref	A		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2126	REF	ref	G		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2127	REF	ref	C		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2128	REF	ref	A		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2129	REF	ref	G		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2130	REF	ref	T		10	10	1.0	78.4	60.0	6	4						false										
+ON023025.1	2131	REF	ref	G		10	10	1.0	76.9	60.0	6	4						false										
+ON023025.1	2132	REF	ref	G		10	10	1.0	80.0	60.0	6	4						false										
+ON023025.1	2133	REF	ref	T		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2134	REF	ref	G		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2135	REF	ref	G		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2136	REF	ref	T		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2137	REF	ref	G		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2138	REF	ref	A		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2139	REF	ref	A		10	9	0.9	40.0	60.0	0	9						false										
+ON023025.1	2139	SNV	alt	A	C	10	1	0.1	24.0	60.0	0	9	0	1	1.0	Tv		true	NS1	gene-NS1	+	GAA	GAC	E	D	515	3	missense
+ON023025.1	2139	SNV	alt	A	C	10	1	0.1	24.0	60.0	0	9	0	1	1.0	Tv		true	NS1	gene-NS1	+	AAA	ACA	K	T	698	2	missense
+ON023025.1	2140	REF	ref	A		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2141	REF	ref	G		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2142	REF	ref	C		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2143	REF	ref	T		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2144	REF	ref	C		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2145	REF	ref	T		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2146	REF	ref	G		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2147	REF	ref	A		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2148	REF	ref	A		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2149	REF	ref	G		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2150	REF	ref	A		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2151	REF	ref	A		10	10	1.0	38.4	60.0	0	10						false										
+ON023025.1	2152	REF	ref	C		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2153	REF	ref	T		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2154	REF	ref	C		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2155	REF	ref	A		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2156	REF	ref	G		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2157	REF	ref	T		10	10	1.0	38.4	60.0	0	10						false										
+ON023025.1	2158	REF	ref	G		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2159	REF	ref	A		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2160	REF	ref	A		10	10	1.0	38.4	60.0	0	10						false										
+ON023025.1	2161	REF	ref	A		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2162	REF	ref	G		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2163	REF	ref	C		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2164	REF	ref	A		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2165	REF	ref	G		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2166	REF	ref	C		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2167	REF	ref	T		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2168	REF	ref	T		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2169	REF	ref	T		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2170	REF	ref	T		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2171	REF	ref	T		10	10	1.0	38.4	60.0	0	10						false										
+ON023025.1	2172	REF	ref	C		10	0	0.0			0	0						false										
+ON023025.1	2172	SNV	alt	C	T	10	10	1.0	40.0	60.0	0	0	0	10	1.0	Ts		true	NS1	gene-NS1	+	TTC	TTT	F	F	526	3	synonymous
+ON023025.1	2172	SNV	alt	C	T	10	10	1.0	40.0	60.0	0	0	0	10	1.0	Ts		true	NS1	gene-NS1	+	TCA	TTA	S	L	709	2	missense
+ON023025.1	2173	REF	ref	A		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2174	REF	ref	A		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2175	REF	ref	C		10	10	1.0	38.4	60.0	0	10						false										
+ON023025.1	2176	REF	ref	C		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2177	REF	ref	T		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2178	REF	ref	C		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2179	REF	ref	A		10	10	1.0	40.0	60.0	0	10						false										
+ON023025.1	2180	REF	ref	T		10	10	1.0	40.0	60.0	0	10						false										

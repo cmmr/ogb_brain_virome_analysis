@@ -1,0 +1,302 @@
+contig	pos	var_type	allele_type	ref_seq	alt_seq	depth	allele_count	AF	allele_avgq	allele_avgmq	ref_fwd	ref_rev	alt_fwd	alt_rev	strand_bias_p	ts_tv	VCF_PASS	is_coding	gene	transcript_id	strand	codon_ref	codon_alt	aa_ref	aa_alt	codon_index	codon_pos	effect
+ON023025.1	3696	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3697	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3698	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3699	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3700	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3701	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3702	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3703	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3704	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3705	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3706	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3707	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3708	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3709	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3710	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3711	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3712	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3713	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3714	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3715	REF	ref	T		3	0	0.0			0	0						false										
+ON023025.1	3715	SNV	alt	T	C	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Ts		true	VP1	gene-VP1	+	AGT	AGC	S	S	371	3	synonymous
+ON023025.1	3715	SNV	alt	T	C	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Ts		true	VP2	gene-VP2	+	AGT	AGC	S	S	144	3	synonymous
+ON023025.1	3716	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3717	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3718	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3719	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3720	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3721	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3722	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3723	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3724	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3725	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3726	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3727	REF	ref	T		3	0	0.0			0	0						false										
+ON023025.1	3727	SNV	alt	T	C	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Ts		true	VP1	gene-VP1	+	CGT	CGC	R	R	375	3	synonymous
+ON023025.1	3727	SNV	alt	T	C	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Ts		true	VP2	gene-VP2	+	CGT	CGC	R	R	148	3	synonymous
+ON023025.1	3728	REF	ref	T		3	0	0.0			0	0						false										
+ON023025.1	3728	SNV	alt	T	C	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Ts		true	VP1	gene-VP1	+	TTA	CTA	L	L	376	1	synonymous
+ON023025.1	3728	SNV	alt	T	C	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Ts		true	VP2	gene-VP2	+	TTA	CTA	L	L	149	1	synonymous
+ON023025.1	3729	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3730	REF	ref	A		3	0	0.0			0	0						false										
+ON023025.1	3730	SNV	alt	A	G	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Ts		true	VP1	gene-VP1	+	TTA	TTG	L	L	376	3	synonymous
+ON023025.1	3730	SNV	alt	A	G	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Ts		true	VP2	gene-VP2	+	TTA	TTG	L	L	149	3	synonymous
+ON023025.1	3731	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3732	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3733	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3734	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3735	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3736	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3737	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3738	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3739	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3740	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3741	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3742	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3743	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3744	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3745	REF	ref	T		3	0	0.0			0	0						false										
+ON023025.1	3745	SNV	alt	T	C	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Ts		true	VP1	gene-VP1	+	GAT	GAC	D	D	381	3	synonymous
+ON023025.1	3745	SNV	alt	T	C	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Ts		true	VP2	gene-VP2	+	GAT	GAC	D	D	154	3	synonymous
+ON023025.1	3746	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3747	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3748	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3749	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3750	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3751	REF	ref	G		3	0	0.0			0	0						false										
+ON023025.1	3751	SNV	alt	G	A	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Ts		true	VP1	gene-VP1	+	GAG	GAA	E	E	383	3	synonymous
+ON023025.1	3751	SNV	alt	G	A	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Ts		true	VP2	gene-VP2	+	GAG	GAA	E	E	156	3	synonymous
+ON023025.1	3752	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3753	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3754	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3755	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3756	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3757	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3758	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3759	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3760	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3761	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3762	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3763	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3764	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3765	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3766	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3767	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3768	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3769	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3770	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3771	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3772	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3773	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3774	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3775	REF	ref	T		3	0	0.0			0	0						false										
+ON023025.1	3775	SNV	alt	T	G	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Tv		true	VP1	gene-VP1	+	GGT	GGG	G	G	391	3	synonymous
+ON023025.1	3775	SNV	alt	T	G	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Tv		true	VP2	gene-VP2	+	GGT	GGG	G	G	164	3	synonymous
+ON023025.1	3776	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3777	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3778	REF	ref	G		3	0	0.0			0	0						false										
+ON023025.1	3778	SNV	alt	G	A	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Ts		true	VP1	gene-VP1	+	CAG	CAA	Q	Q	392	3	synonymous
+ON023025.1	3778	SNV	alt	G	A	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Ts		true	VP2	gene-VP2	+	CAG	CAA	Q	Q	165	3	synonymous
+ON023025.1	3779	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3780	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3781	REF	ref	A		3	0	0.0			0	0						false										
+ON023025.1	3781	SNV	alt	A	T	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Tv		true	VP1	gene-VP1	+	GGA	GGT	G	G	393	3	synonymous
+ON023025.1	3781	SNV	alt	A	T	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Tv		true	VP2	gene-VP2	+	GGA	GGT	G	G	166	3	synonymous
+ON023025.1	3782	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3783	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3784	REF	ref	G		3	0	0.0			0	0						false										
+ON023025.1	3784	SNV	alt	G	A	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Ts		true	VP1	gene-VP1	+	CAG	CAA	Q	Q	394	3	synonymous
+ON023025.1	3784	SNV	alt	G	A	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Ts		true	VP2	gene-VP2	+	CAG	CAA	Q	Q	167	3	synonymous
+ON023025.1	3785	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3786	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3787	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3788	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3789	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3790	REF	ref	C		3	0	0.0			0	0						false										
+ON023025.1	3790	SNV	alt	C	T	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Ts		true	VP1	gene-VP1	+	ACC	ACT	T	T	396	3	synonymous
+ON023025.1	3790	SNV	alt	C	T	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Ts		true	VP2	gene-VP2	+	ACC	ACT	T	T	169	3	synonymous
+ON023025.1	3791	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3792	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3793	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3794	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3795	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3796	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3797	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3798	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3799	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3800	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3801	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3802	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3803	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3804	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3805	REF	ref	G		3	0	0.0			0	0						false										
+ON023025.1	3805	SNV	alt	G	T	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Tv		true	VP1	gene-VP1	+	CTG	CTT	L	L	401	3	synonymous
+ON023025.1	3805	SNV	alt	G	T	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Tv		true	VP2	gene-VP2	+	CTG	CTT	L	L	174	3	synonymous
+ON023025.1	3806	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3807	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3808	REF	ref	T		3	0	0.0			0	0						false										
+ON023025.1	3808	SNV	alt	T	C	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Ts		true	VP1	gene-VP1	+	CCT	CCC	P	P	402	3	synonymous
+ON023025.1	3808	SNV	alt	T	C	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Ts		true	VP2	gene-VP2	+	CCT	CCC	P	P	175	3	synonymous
+ON023025.1	3809	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3810	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3811	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3812	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3813	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3814	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3815	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3816	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3817	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3818	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3819	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3820	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3821	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3822	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3823	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3824	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3825	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3826	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3827	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3828	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3829	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3830	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3831	REF	ref	A		3	3	1.0	34.666666666666664	60.0	3	0						false										
+ON023025.1	3832	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3833	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3834	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3835	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3836	REF	ref	G		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3837	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3838	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3839	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3840	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3841	REF	ref	T		3	0	0.0			0	0						false										
+ON023025.1	3841	SNV	alt	T	C	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Ts		true	VP1	gene-VP1	+	TAT	TAC	Y	Y	413	3	synonymous
+ON023025.1	3841	SNV	alt	T	C	3	3	1.0	40.0	60.0	0	0	3	0	1.0	Ts		true	VP2	gene-VP2	+	TAT	TAC	Y	Y	186	3	synonymous
+ON023025.1	3842	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3843	REF	ref	T		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3844	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3845	REF	ref	A		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3846	REF	ref	C		3	3	1.0	40.0	60.0	3	0						false										
+ON023025.1	3856	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3857	REF	ref	G		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3858	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3859	REF	ref	A		3	0	0.0			0	0						false										
+ON023025.1	3859	SNV	alt	A	T	3	3	1.0	34.666666666666664	54.0	0	0	0	3	1.0	Tv		true	VP1	gene-VP1	+	GTA	GTT	V	V	419	3	synonymous
+ON023025.1	3859	SNV	alt	A	T	3	3	1.0	34.666666666666664	54.0	0	0	0	3	1.0	Tv		true	VP2	gene-VP2	+	GTA	GTT	V	V	192	3	synonymous
+ON023025.1	3860	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3861	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3862	REF	ref	C		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3863	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3864	REF	ref	C		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3865	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3866	REF	ref	C		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3867	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3868	REF	ref	G		3	0	0.0			0	0						false										
+ON023025.1	3868	SNV	alt	G	A	3	3	1.0	40.0	54.0	0	0	0	3	1.0	Ts		true	VP1	gene-VP1	+	CAG	CAA	Q	Q	422	3	synonymous
+ON023025.1	3868	SNV	alt	G	A	3	3	1.0	40.0	54.0	0	0	0	3	1.0	Ts		true	VP2	gene-VP2	+	CAG	CAA	Q	Q	195	3	synonymous
+ON023025.1	3869	REF	ref	G		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3870	REF	ref	G		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3871	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3872	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3873	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3874	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3875	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3876	REF	ref	C		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3877	REF	ref	A		3	0	0.0			0	0						false										
+ON023025.1	3877	SNV	alt	A	T	3	3	1.0	40.0	54.0	0	0	0	3	1.0	Tv		true	VP1	gene-VP1	+	TCA	TCT	S	S	425	3	synonymous
+ON023025.1	3877	SNV	alt	A	T	3	3	1.0	40.0	54.0	0	0	0	3	1.0	Tv		true	VP2	gene-VP2	+	TCA	TCT	S	S	198	3	synonymous
+ON023025.1	3878	REF	ref	G		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3879	REF	ref	G		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3880	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3881	REF	ref	G		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3882	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3883	REF	ref	C		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3884	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3885	REF	ref	G		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3886	REF	ref	T		3	0	0.0			0	0						false										
+ON023025.1	3886	SNV	alt	T	C	3	3	1.0	40.0	54.0	0	0	0	3	1.0	Ts		true	VP1	gene-VP1	+	AGT	AGC	S	S	428	3	synonymous
+ON023025.1	3886	SNV	alt	T	C	3	3	1.0	40.0	54.0	0	0	0	3	1.0	Ts		true	VP2	gene-VP2	+	AGT	AGC	S	S	201	3	synonymous
+ON023025.1	3887	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3888	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3889	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3890	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3891	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3892	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3893	REF	ref	C		3	0	0.0			0	0						false										
+ON023025.1	3893	SNV	alt	C	T	3	3	1.0	40.0	54.0	0	0	0	3	1.0	Ts		true	VP1	gene-VP1	+	CTA	TTA	L	L	431	1	synonymous
+ON023025.1	3893	SNV	alt	C	T	3	3	1.0	40.0	54.0	0	0	0	3	1.0	Ts		true	VP2	gene-VP2	+	CTA	TTA	L	L	204	1	synonymous
+ON023025.1	3894	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3895	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3896	REF	ref	G		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3897	REF	ref	C		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3898	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3899	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3900	REF	ref	G		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3901	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3902	REF	ref	G		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3903	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3904	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3905	REF	ref	G		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3906	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3907	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3908	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3909	REF	ref	C		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3910	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3911	REF	ref	G		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3912	REF	ref	C		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3913	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3914	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3915	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3916	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3917	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3918	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3919	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3920	REF	ref	G		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3921	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3922	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3923	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3924	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3925	REF	ref	A		3	0	0.0			0	0						false										
+ON023025.1	3925	SNV	alt	A	G	3	3	1.0	40.0	54.0	0	0	0	3	1.0	Ts		true	VP1	gene-VP1	+	TTA	TTG	L	L	441	3	synonymous
+ON023025.1	3925	SNV	alt	A	G	3	3	1.0	40.0	54.0	0	0	0	3	1.0	Ts		true	VP2	gene-VP2	+	TTA	TTG	L	L	214	3	synonymous
+ON023025.1	3926	REF	ref	G		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3927	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3928	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3929	REF	ref	C		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3930	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3931	REF	ref	C		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3932	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3933	REF	ref	G		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3934	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3935	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3936	REF	ref	C		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3937	REF	ref	A		3	0	0.0			0	0						false										
+ON023025.1	3937	SNV	alt	A	T	3	3	1.0	40.0	54.0	0	0	0	3	1.0	Tv		true	VP1	gene-VP1	+	TCA	TCT	S	S	445	3	synonymous
+ON023025.1	3937	SNV	alt	A	T	3	3	1.0	40.0	54.0	0	0	0	3	1.0	Tv		true	VP2	gene-VP2	+	TCA	TCT	S	S	218	3	synonymous
+ON023025.1	3938	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3939	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3940	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3941	REF	ref	G		3	0	0.0			0	0						false										
+ON023025.1	3941	SNV	alt	G	C	3	3	1.0	40.0	54.0	0	0	0	3	1.0	Tv		true	VP1	gene-VP1	+	GAA	CAA	E	Q	447	1	missense
+ON023025.1	3941	SNV	alt	G	C	3	3	1.0	40.0	54.0	0	0	0	3	1.0	Tv		true	VP2	gene-VP2	+	GAA	CAA	E	Q	220	1	missense
+ON023025.1	3942	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3943	REF	ref	A		3	0	0.0			0	0						false										
+ON023025.1	3943	SNV	alt	A	G	3	3	1.0	40.0	54.0	0	0	0	3	1.0	Ts		true	VP1	gene-VP1	+	GAA	GAG	E	E	447	3	synonymous
+ON023025.1	3943	SNV	alt	A	G	3	3	1.0	40.0	54.0	0	0	0	3	1.0	Ts		true	VP2	gene-VP2	+	GAA	GAG	E	E	220	3	synonymous
+ON023025.1	3944	REF	ref	C		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3945	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3946	REF	ref	G		3	0	0.0			0	0						false										
+ON023025.1	3946	SNV	alt	G	T	3	3	1.0	40.0	54.0	0	0	0	3	1.0	Tv		true	VP1	gene-VP1	+	CTG	CTT	L	L	448	3	synonymous
+ON023025.1	3946	SNV	alt	G	T	3	3	1.0	40.0	54.0	0	0	0	3	1.0	Tv		true	VP2	gene-VP2	+	CTG	CTT	L	L	221	3	synonymous
+ON023025.1	3947	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3948	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3949	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3950	REF	ref	G		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3951	REF	ref	G		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3952	REF	ref	T		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3953	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3954	REF	ref	C		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3955	REF	ref	A		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3956	REF	ref	G		3	3	1.0	40.0	54.0	0	3						false										
+ON023025.1	3957	REF	ref	G		3	3	1.0	40.0	54.0	0	3						false										

@@ -1,0 +1,199 @@
+contig	pos	var_type	allele_type	ref_seq	alt_seq	depth	allele_count	AF	allele_avgq	allele_avgmq	ref_fwd	ref_rev	alt_fwd	alt_rev	strand_bias_p	ts_tv	VCF_PASS	is_coding	gene	transcript_id	strand	codon_ref	codon_alt	aa_ref	aa_alt	codon_index	codon_pos	effect
+ON023025.1	5091	REF	ref	T		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5092	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5093	REF	ref	T		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5094	REF	ref	G		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5095	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5096	REF	ref	G		5	0	0.0			0	0						false										
+ON023025.1	5096	SNV	alt	G	A	5	5	1.0	40.0	30.0	0	0	5	0	1.0	Ts		true	UQK62733.1	cds-UQK62733.1	+	GAG	GAA	E	E	76	3	synonymous
+ON023025.1	5097	REF	ref	C		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5098	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5099	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5100	REF	ref	C		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5101	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5102	REF	ref	T		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5103	REF	ref	G		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5104	REF	ref	T		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5105	REF	ref	A		5	0	0.0			0	0						false										
+ON023025.1	5105	SNV	alt	A	T	5	5	1.0	40.0	30.0	0	0	5	0	1.0	Tv		true	UQK62733.1	cds-UQK62733.1	+	GTA	GTT	V	V	79	3	synonymous
+ON023025.1	5106	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5107	REF	ref	T		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5108	REF	ref	T		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5109	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5110	REF	ref	G		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5111	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5112	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5113	REF	ref	T		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5114	REF	ref	G		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5115	REF	ref	C		5	0	0.0			0	0						false										
+ON023025.1	5115	SNV	alt	C	T	5	5	1.0	40.0	30.0	0	0	5	0	1.0	Ts		true	UQK62733.1	cds-UQK62733.1	+	CTT	TTT	L	F	83	1	missense
+ON023025.1	5116	REF	ref	T		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5117	REF	ref	T		5	0	0.0			0	0						false										
+ON023025.1	5117	SNV	alt	T	A	5	5	1.0	40.0	30.0	0	0	5	0	1.0	Tv		true	UQK62733.1	cds-UQK62733.1	+	CTT	CTA	L	L	83	3	synonymous
+ON023025.1	5118	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5119	REF	ref	G		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5120	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5121	REF	ref	T		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5122	REF	ref	T		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5123	REF	ref	G		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5124	REF	ref	T		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5125	REF	ref	G		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5126	REF	ref	T		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5127	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5128	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5129	REF	ref	T		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5130	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5131	REF	ref	T		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5132	REF	ref	G		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5133	REF	ref	T		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5134	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5135	REF	ref	T		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5136	REF	ref	A		5	0	0.0			0	0						false										
+ON023025.1	5136	SNV	alt	A	C	5	5	1.0	40.0	30.0	0	0	5	0	1.0	Tv		true	UQK62733.1	cds-UQK62733.1	+	ACA	CCA	T	P	90	1	missense
+ON023025.1	5137	REF	ref	C		5	0	0.0			0	0						false										
+ON023025.1	5137	SNV	alt	C	A	5	5	1.0	40.0	30.0	0	0	5	0	1.0	Tv		true	UQK62733.1	cds-UQK62733.1	+	ACA	AAA	T	K	90	2	missense
+ON023025.1	5138	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5139	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5140	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5141	REF	ref	T		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5142	REF	ref	T		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5143	REF	ref	T		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5144	REF	ref	G		5	0	0.0			0	0						false										
+ON023025.1	5144	SNV	alt	G	A	5	5	1.0	40.0	30.0	0	0	5	0	1.0	Ts		true	UQK62733.1	cds-UQK62733.1	+	TTG	TTA	L	L	92	3	synonymous
+ON023025.1	5145	REF	ref	G		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5146	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5147	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5148	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5149	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5150	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5151	REF	ref	T		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5152	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5153	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5154	REF	ref	A		5	5	1.0	40.0	30.0	5	0						false										
+ON023025.1	5186	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5187	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5188	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5189	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5190	REF	ref	T		5	5	1.0	36.8	33.0	0	5						false										
+ON023025.1	5191	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5192	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5193	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5194	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5195	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5196	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5197	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5198	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5199	REF	ref	T		5	0	0.0			0	0						false										
+ON023025.1	5199	SNV	alt	T	A	5	5	1.0	40.0	33.0	0	0	0	5	1.0	Tv		false										
+ON023025.1	5200	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5201	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5202	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5203	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5204	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5205	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5206	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5207	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5208	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5209	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5210	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5211	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5212	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5213	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5214	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5215	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5216	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5217	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5218	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5219	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5220	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5221	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5222	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5223	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5224	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5225	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5226	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5227	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5228	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5229	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5230	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5231	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5232	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5233	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5234	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5235	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5236	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5237	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5238	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5239	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5240	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5241	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5242	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5243	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5244	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5245	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5246	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5247	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5248	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5249	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5250	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5251	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5252	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5253	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5254	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5255	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5256	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5257	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5258	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5259	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5260	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5261	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5262	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5263	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5264	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5265	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5266	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5267	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5268	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5269	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5270	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5271	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5272	REF	ref	C		5	0	0.0			0	0						false										
+ON023025.1	5272	SNV	alt	C	T	5	5	1.0	40.0	33.0	0	0	0	5	1.0	Ts		false										
+ON023025.1	5273	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5274	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5275	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5276	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5277	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5278	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5279	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5280	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5281	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5282	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5283	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5284	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5285	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5286	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5287	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5288	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5289	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5290	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5291	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5292	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5293	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5294	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5295	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5296	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5297	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5298	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5299	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5300	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5301	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5302	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5303	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5304	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5305	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5306	REF	ref	G		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5307	REF	ref	T		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5308	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5309	REF	ref	A		5	5	1.0	40.0	33.0	0	5						false										
+ON023025.1	5310	REF	ref	C		5	5	1.0	40.0	33.0	0	5						false										
