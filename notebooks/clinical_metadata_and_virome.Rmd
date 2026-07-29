@@ -54,6 +54,11 @@ meta_dt <- rbind(
 ```
 
 ```{r}
+meta_dt |> distinct(tissue)
+```
+
+
+```{r}
 donor_meta_dt <- read_excel(
   here::here("metadata/donors/simple_donor_meta1.xlsx")
 )
@@ -132,6 +137,35 @@ merge_dt <- merge(
   filter(!grepl("CMMR", sample_ID)) # remove controls
 ```
 
+```{r}
+merge_dt |> distinct(tissue)
+```
+
+
+# Donor Age at Death ~ AD
+```{r}
+age_p <- donor_meta_dt |>
+  ggplot(aes(x = AD_status, y = age_at_death)) +
+  geom_boxplot(outlier.shape = NA, fill = "grey70") +
+  geom_point(color = "grey25") +
+  stat_compare_means(method = "wilcox.test") +
+  theme_bw() +
+  labs(
+    x = "Alzheimer's disease diagnosis",
+    y = "Age at death"
+  )
+
+age_p
+```
+
+```{r}
+ggsave(
+  here::here("charts/AD_status_age_at_death.pdf"),
+  age_p,
+  width = 5,
+  height = 4
+)
+```
 
 # Virome ~ metadata association analysis
 
@@ -169,6 +203,9 @@ c(n_samples = n_samples, n_viral_negative = n_negative)
 table(regions_per_donor = table(sample_meta$donor))
 ```
 
+```{r}
+sample_meta |> distinct(tissue)
+```
 
 ## Focus on the most common virus species
 
@@ -205,6 +242,11 @@ pa <- tidyr::crossing(sample_meta, species = focal_species$species) |>
   )
 ```
 
+```{r}
+pa |> distinct(tissue)
+```
+
+
 
 ## Descriptive prevalence plots
 
@@ -214,7 +256,7 @@ ad_prev_p <- pa |>
   group_by(sp_short, AD_status) |>
   summarise(prev = mean(present), .groups = "drop") |>
   ggplot(aes(reorder(sp_short, prev), prev, fill = AD_status)) +
-  geom_col(position = position_dodge()) +
+  geom_col(position = position_dodge(), color = "black") +
   scale_fill_manual(values = c(
     "#E2D200", "#46ACC8"
   )) +
@@ -229,9 +271,9 @@ tissue_prev_p <- pa |>
   group_by(sp_short, tissue) |>
   summarise(prev = mean(present), .groups = "drop") |>
   ggplot(aes(reorder(sp_short, prev), prev, fill = tissue)) +
-  geom_col(position = position_dodge()) +
+  geom_col(position = position_dodge(), color = "black") +
   scale_fill_manual(values = c(
-    "#F1BB7B", "#FD6467", "#5B1A18", "#D67236"
+    "#013D5A", "#FCF3E3", "#708C69", "#E4A25B"
   )) +
   coord_flip() +
   labs(x = NULL, y = "Detection prevalence", fill = "Brain region",
@@ -294,6 +336,15 @@ tissue_res <- map_dfr(focal_species$species, function(sp) {
   arrange(p.value)
 tissue_res
 ```
+
+```{r}
+pa |>
+  filter(species == "s__Adeno-associated virus") |>
+  group_by(tissue) |>
+  summarise(total_present = sum(present), n_specimens = n())
+```
+
+
 
 ### AD status & age — (A) donor-aggregated
 

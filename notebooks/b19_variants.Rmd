@@ -14,6 +14,7 @@ library(ggplot2)
 library(readxl)
 library(ggpubr)
 source(here::here("src/parse_sample_id.R"))
+library(ape)
 ```
 
 
@@ -122,14 +123,23 @@ muts_p <- merge_dt |>
       allele_type == "alt" & AF < 0.5 ~ "",
       is.na(alt_seq) ~ "",
       TRUE ~ alt_seq
-    )
+    ),
+    patient_ID = gsub("^XX-", "", patient_ID)
   ) |>
-  ggplot(aes(x = pos, y = uid, fill = alt_seq)) +
-  geom_tile() +
-  scale_fill_manual(values = c(
-    "grey75", "#52777A","#542437","#C02942","#D95B43","#ECD078"
-  )) +
+  ggplot(aes(x = pos, y = uid, color = alt_seq, shape = alt_seq, size = alt_seq)) +
+  geom_point() +
+  scale_shape_manual(values = c(20, 73, 73, 73, 73), name = "SNP") +
+  scale_size_manual(values = c(0.4, 3, 3, 3, 3), name = "SNP") +
+  scale_color_manual(values = c(
+    "grey85", "#52777A","#542437","#C02942","#D95B43","#ECD078"
+  ),
+  name = "SNP") +
   facet_grid(rows = vars(patient_ID), cols = vars(contig), scale = "free_y", space = "free") +
+  labs(
+    x = "Genome Position",
+    y = "Genome Reconstructions"
+  ) +
+  coord_cartesian(xlim = c(100, 5100)) +
   theme_bw() +
   theme(
     panel.spacing = unit(0, "lines"),
@@ -141,22 +151,257 @@ muts_p <- merge_dt |>
 muts_p
 ```
 
-
 ```{r}
 ggsave(
   here::here("charts/b19_mutation_plot1.pdf"),
   muts_p,
-  height = 12,
+  height = 13,
   width = 8
 )
 
 ggsave(
   here::here("charts/b19_mutation_plot1.png"),
   muts_p,
-  height = 12,
+  height = 13,
   width = 8
 )
 ```
+
+
+```{r}
+# private SNPs only
+private_p <- merge_dt |>
+  mutate(
+    alt_seq = case_when(
+      allele_type == "alt" & AF < 0.5 ~ "",
+      is.na(alt_seq) ~ "",
+      TRUE ~ alt_seq
+    ),
+    patient_ID = gsub("^XX-", "", patient_ID)
+  ) |>
+  group_by(pos, alt_seq) |>
+  mutate(
+    n_patients = n_distinct(patient_ID),
+    private = case_when(
+      n_patients == 1 ~ "private",
+      TRUE ~ ""
+    )
+  ) |>
+  ungroup() |>
+  ggplot(aes(x = pos, y = uid, color = private, shape = private, size = private)) +
+  geom_point() +
+  scale_shape_manual(values = c(20, 73, 73, 73, 73), name = "private SNP") +
+  scale_size_manual(values = c(0.4, 3, 3, 3, 3), name = "private SNP") +
+  scale_color_manual(values = c(
+    "grey85", "purple"
+    ),
+    name = "private SNP"
+  ) +
+  facet_grid(rows = vars(patient_ID), cols = vars(contig), scale = "free_y", space = "free") +
+  labs(
+    x = "Genome Position",
+    y = "Genome Reconstructions"
+  ) +
+  coord_cartesian(xlim = c(100, 5100)) +
+  theme_bw() +
+  theme(
+    panel.spacing = unit(0, "lines"),
+    axis.text.y = element_blank(),
+    strip.text.y = element_text(angle = 0),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank()
+    )
+private_p
+```
+```{r}
+ggsave(
+  here::here("charts/b19_private_muts_plot1.pdf"),
+  private_p,
+  height = 13,
+  width = 8
+)
+
+ggsave(
+  here::here("charts/b19_private_muts_plot1.png"),
+  private_p,
+  height = 13,
+  width = 8
+)
+```
+
+
+```{r}
+rm(varm_dt, merge_dt)
+```
+
+load genome reconstructions and compare
+```{r}
+genomes <- read.FASTA(
+  here::here("data/b19_reconstructions/parvovirus_b19_genome_reconstructions1.1000nt.fna")
+)
+
+alns <- read.FASTA(
+  here::here("data/b19_reconstructions/parvovirus_b19_genome_reconstructions1.1000nt.MAFFT.fna")
+
+)
+```
+
+```{r}
+dists <- dist.dna(alns, model = "JC69", pairwise.deletion = TRUE, as.matrix = T)
+```
+
+```{r}
+blast_dt <- fread(
+  here::here("data/b19_reconstructions/parvovirus_b19_genome_reconstructions1.1000nt.pairwise.blastn.parsed.tsv"),
+  sep = "\t",
+  header = T,
+  col.names = c(
+    "qseqid", "sseqid", "orig_pident", "length", "orig_mismatch", 
+    "gaps", "qseq", "sseq", "corrected_mismatches", "corrected_pident"
+#                qseqid, sseqid, orig_pident, length, orig_mismatch, gaps, 
+#                qseq, sseq, corrected_mismatches, round(corrected_pident, 2)
+    )
+)
+
+blast_sum <- blast_dt |>
+  group_by(qseqid, sseqid) |>
+  summarise(
+    total_length = sum(length),
+    total_mismatch = sum(corrected_mismatches),
+    blast_dist = total_mismatch / total_length
+    )
+```
+
+
+```{r}
+long_dt <- blast_sum |>
+  rename(genome_A = qseqid, genome_B = sseqid) |>
+  mutate(
+    samp_A = gsub("_consensus", "", genome_A),
+    samp_A = gsub("NC_", "", samp_A),
+    samp_A = gsub("^[^_]*_", "", samp_A),
+  ) |>
+  separate_wider_delim(
+    cols = samp_A, 
+    delim = ".", 
+    names = c("samp_A", "Pool_A")
+  ) |>
+  filter(
+    Pool_A %in% c("p1733", "p1849", "p1894", "p2058"),
+    !grepl("Hybrid", samp_A),
+    !grepl("-B$", samp_A)
+  ) |>
+  mutate(
+    join_col_A = case_when(
+      grepl("XX-0", samp_A) ~ str_replace(samp_A, "^([^-]*-[^-]*).*$", "\\1"),
+      #grepl("HELTHY|MODAD|SEVAD", sample_ID) ~ gsub("-A$", "", sample_ID),
+      TRUE ~ samp_A
+    )
+  ) |>
+  mutate(
+    samp_B = gsub("_consensus", "", genome_B),
+    samp_B = gsub("NC_", "", samp_B),
+    samp_B = gsub("^[^_]*_", "", samp_B),
+  ) |>
+  separate_wider_delim(
+    cols = samp_B, 
+    delim = ".", 
+    names = c("samp_B", "Pool_B")
+  ) |>
+  filter(
+    Pool_B %in% c("p1733", "p1849", "p1894", "p2058"),
+    !grepl("Hybrid", samp_B),
+    !grepl("-B$", samp_B)
+  ) |>
+  mutate(
+    join_col_B = case_when(
+      grepl("XX-0", samp_B) ~ str_replace(samp_B, "^([^-]*-[^-]*).*$", "\\1"),
+      #grepl("HELTHY|MODAD|SEVAD", sample_ID) ~ gsub("-A$", "", sample_ID),
+      TRUE ~ samp_B
+    )
+  )
+
+head(long_dt)
+
+```
+
+```{r}
+dist_merge1_dt <- merge(
+  long_dt,
+  donor_meta_dt,
+  by.x = "join_col_A",
+  by.y = "join_col"
+) |>
+  rename(patient_ID_A = patient_ID)
+
+dist_merge2_dt <- merge(
+  dist_merge1_dt,
+  donor_meta_dt,
+  by.x = "join_col_B",
+  by.y = "join_col"
+) |>
+  rename(patient_ID_B = patient_ID) |>
+  filter(samp_A != samp_B) |>
+  mutate(
+    comparison = case_when(
+      patient_ID_A == patient_ID_B ~ "intra-donor",
+      TRUE ~ "inter-donor"
+    )
+  )
+```
+
+```{r}
+dist_p <- dist_merge2_dt  |>
+  ggplot(aes(x = comparison, y = blast_dist, fill = comparison)) +
+  geom_violin(width = 1, color = "black") +
+  scale_fill_manual(values = c("#5B5F8D", "#DA6B51")) +
+  stat_compare_means() +
+  labs(
+    x = "Genome Comparison",
+    y = "Nucleotide Distance (mismatch/length)"
+  ) +
+  theme_bw()
+dist_p
+```
+
+```{r}
+ggsave(
+  here::here("charts/b19_dna_dist_donors_violin.pdf"),
+  dist_p,
+  width = 4,
+  height = 6
+)
+```
+
+
+
+```{r}
+dist_merge2_dt |>
+  filter(patient_ID_A == patient_ID_B)
+```
+
+
+
+```{r}
+dist_merge2_dt  |>
+  #filter(total_length >= 1000) |>
+  ggplot(aes(x = blast_dist, fill = comparison)) +
+  geom_density(alpha = 0.6, color = "white") +
+  theme_bw() 
+```
+
+```{r}
+intra_dt <- dist_merge2_dt |> filter(comparison == "intra-donor")
+inter_dt <- dist_merge2_dt |> filter(comparison == "inter-donor")
+```
+
+```{r}
+wilcox.test(
+  intra_dt$blast_dist,
+  inter_dt$blast_dist
+)
+```
+
 
 
 

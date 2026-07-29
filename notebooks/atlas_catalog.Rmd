@@ -152,6 +152,39 @@ ggsave(
 )
 ```
 
+```{r}
+merge_dt |> distinct(sample_ID)
+```
+
+
+```{r}
+merge_dt |>
+  group_by(species) |>
+  summarise(n = n(), perc = n/249) |>
+  arrange(desc(n))
+```
+
+```{r}
+sp_n_dt <- merge_dt |>
+  group_by(sample_ID) |>
+  summarise(n = n_distinct(species, na.rm = T)) |>
+  arrange(desc(n))
+```
+
+```{r}
+median(sp_n_dt$n)
+mean(sp_n_dt$n)
+```
+
+```{r}
+anti_join(
+  esv_tax_dt,
+  meta_dt,
+  by = "sample_ID"
+) |>
+  distinct(sample_ID)
+```
+
 
 
 

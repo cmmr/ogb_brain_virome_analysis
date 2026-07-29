@@ -102,12 +102,15 @@ tipann <- tibble(label = tr1$tip.label) |>
 donor_meta_dt <- read_excel(
   here::here("metadata/donors/simple_donor_meta1.xlsx")
 )
+```
+
+```{r}
 
 tip_merge <- merge(
   tipann,
   donor_meta_dt,
   by.x = "mlab2",
-  by.y = "year_patient",
+  by.y = "join_col",
   all.x = T
 ) |>
   mutate(big_label = paste(Collection_Date, AD_status, age_at_death, sep = " ")) |>
@@ -190,7 +193,7 @@ tip_mergeo <- merge(
   tipanno,
   donor_meta_dt,
   by.x = "mlab2",
-  by.y = "year_patient",
+  by.y = "join_col",
   all.x = T
 ) |>
   mutate(big_label = paste(Collection_Date, AD_status, age_at_death, sep = " ")) |>
@@ -229,11 +232,180 @@ ggsave(
 ```
 
 
+# NS1 gene tree
+```{r}
+nstree1 <- read.tree(here::here("data/b19_phylo/ns_epang/epa_result.newick"))
+```
+
+```{r}
+ggtree(nstree1, layout = "rectangular") + geom_tippoint(alpha = 0.6) +
+  geom_tiplab()
+```
+
+
+```{r}
+nstree1$tip.label <- gsub("_NS", "", nstree1$tip.label)
+
+ns_tipann <- tibble(label = nstree1$tip.label) |>
+  left_join(gb_meta, by = "label") |>
+  mutate(Genotype = case_when(
+    is.na(Genotype) ~ "this study",
+    Genotype == "" ~ "GenBank unlabeled",
+    TRUE ~ toupper(Genotype)
+    ),
+    mlab2 = case_when(
+      grepl("_consensus", label) ~ gsub("NC_", "", label),
+      TRUE ~ label
+    ),
+    mlab2 = str_remove(mlab2, "^[^_]*_"),
+    mlab2 = gsub("_consensus$", "", mlab2),
+    mlab2 = case_when(
+      grepl("XX-0", mlab2) ~ str_replace(mlab2, "^([^-]*-[^-]*).*$", "\\1"),
+      grepl("HELTHY|MODAD|SEVAD|H-H", mlab2) ~ str_remove(mlab2, "\\..*"),
+      TRUE ~ mlab2
+    )
+  ) 
+
+```
+
+```{r}
+tip_merge_ns <- merge(
+  ns_tipann,
+  donor_meta_dt,
+  by.x = "mlab2",
+  by.y = "join_col",
+  all.x = T
+) |>
+  mutate(big_label = paste(Collection_Date, AD_status, age_at_death, sep = " ")) |>
+  relocate(mlab2, .after = last_col())
+```
 
 
 
 
 
+
+```{r}
+is.waive <- function(x) inherits(x, "waiver")
+
+po_ns <- ggtree(nstree1, layout = "roundrect", size = 0.3) %<+% tip_merge_ns
+
+po_ns1 <- po_ns +
+  geom_tippoint(
+    aes(color = Genotype),
+    alpha = 0.8
+  ) +
+  #geom_tiplab(aes(label = big_label),
+  #            size = 2, offset = 0.002, align = FALSE) +
+  theme_tree2() +
+  scale_color_manual(
+    values = c("cadetblue", "lightblue",
+               "purple", "grey", "#9B6981"
+               )
+  ) +
+  labs(
+    title = "Parvovirus B19 NS gene tree"
+  )
+
+po_ns1
+```
+
+
+```{r}
+ggsave(
+  here::here("charts/parvo_b19_NS_gene_tree_1.pdf"),
+  po_ns1,
+  width = 9,
+  height = 7
+)
+```
+
+# VP1 gene tree
+```{r}
+vptree1 <- read.tree(here::here("data/b19_phylo/vp1_epang/epa_result.newick"))
+```
+
+```{r}
+ggtree(vptree1, layout = "rectangular") + geom_tippoint(alpha = 0.6) +
+  geom_tiplab()
+```
+
+
+```{r}
+vptree1$tip.label <- gsub("_VP1", "", vptree1$tip.label)
+
+vp_tipann <- tibble(label = vptree1$tip.label) |>
+  left_join(gb_meta, by = "label") |>
+  mutate(Genotype = case_when(
+    is.na(Genotype) ~ "this study",
+    Genotype == "" ~ "GenBank unlabeled",
+    TRUE ~ toupper(Genotype)
+    ),
+    mlab2 = case_when(
+      grepl("_consensus", label) ~ gsub("NC_", "", label),
+      TRUE ~ label
+    ),
+    mlab2 = str_remove(mlab2, "^[^_]*_"),
+    mlab2 = gsub("_consensus$", "", mlab2),
+    mlab2 = case_when(
+      grepl("XX-0", mlab2) ~ str_replace(mlab2, "^([^-]*-[^-]*).*$", "\\1"),
+      grepl("HELTHY|MODAD|SEVAD|H-H", mlab2) ~ str_remove(mlab2, "\\..*"),
+      TRUE ~ mlab2
+    )
+  ) 
+
+```
+
+```{r}
+tip_merge_vp <- merge(
+  vp_tipann,
+  donor_meta_dt,
+  by.x = "mlab2",
+  by.y = "join_col",
+  all.x = T
+) |>
+  mutate(big_label = paste(Collection_Date, AD_status, age_at_death, sep = " ")) |>
+  relocate(mlab2, .after = last_col())
+```
+
+
+
+
+
+
+```{r}
+is.waive <- function(x) inherits(x, "waiver")
+
+po_vp <- ggtree(vptree1, layout = "roundrect", size = 0.3) %<+% tip_merge_vp
+
+po_vp1 <- po_vp +
+  geom_tippoint(
+    aes(color = Genotype),
+    alpha = 0.8
+  ) +
+  #geom_tiplab(aes(label = big_label),
+  #            size = 2, offset = 0.002, align = FALSE) +
+  theme_tree2() +
+  scale_color_manual(
+    values = c("cadetblue", "lightblue",
+               "purple", "grey", "#9B6981"
+               )
+  ) +
+  labs(
+    title = "Parvovirus B19 VP1 gene tree"
+  )
+
+po_vp1
+```
+
+```{r}
+ggsave(
+  here::here("charts/parvo_b19_VP1_gene_tree_1.pdf"),
+  po_vp1,
+  width = 9,
+  height = 7
+)
+```
 
 
 

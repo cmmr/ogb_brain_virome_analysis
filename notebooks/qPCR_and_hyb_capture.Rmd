@@ -134,6 +134,47 @@ sum_dt <- merge_dt |>
   ))
 ```
 
+
+```{r}
+pcr_seq2_p <- sum_dt |>
+  mutate(
+    pcr_detect = case_when(
+      pcr_count == 0 ~ FALSE,
+      TRUE ~ TRUE
+    )
+  ) |>
+  group_by(seq_detect, pcr_detect) |>
+  summarize(n = n()) |>
+  ungroup() |>
+  complete(seq_detect, pcr_detect, fill = list(n = 0)) |>
+  ggplot(aes(x = pcr_detect, y = seq_detect)) +
+  geom_point(aes(size = n, color = n)) +
+  geom_text(aes(label = n)) +
+  scale_color_gradient(
+    high = "gold",
+    low = "grey90"
+  ) +
+  scale_size(range = c(0, 20)) +
+  theme_bw() +
+  labs(
+    x = "positive qPCR detect (any out of 3)",
+    y = "positive by hybrid capture sequencing",
+    title = "Specimen-level Parvovirus B19 detection via\nqPCR and hybrid capture sequencing"
+  )
+pcr_seq2_p
+```
+
+
+```{r}
+ggsave(
+  here::here("charts/qPCR_positive_vs_seq_positive_b19.pdf"),
+  pcr_seq2_p,
+  width = 5.5,
+  height = 4.5
+)
+```
+
+
 ```{r}
 write.table(
   sum_dt,
@@ -242,3 +283,17 @@ test_dt <- merge_dt |>
 kappa2(test_dt |> select(pat_pcr_detect, pat_seq_detect))
 ```
 
+```{r}
+sum_k_dt <- sum_dt |>
+  mutate(
+    pcr_detect = case_when(
+      pcr_count == 0 ~ FALSE,
+      TRUE ~ TRUE
+    )
+  )
+```
+
+```{r}
+
+kappa2(sum_k_dt |> select(pcr_detect, seq_detect))
+```

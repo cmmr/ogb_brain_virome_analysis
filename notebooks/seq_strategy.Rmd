@@ -14,6 +14,7 @@ library(ggplot2)
 library(readxl)
 library(ggpubr)
 source(here::here("src/parse_sample_id.R"))
+library(forcats)
 ```
 
 
@@ -188,6 +189,54 @@ sum_box_p <- patient_abundance_sum_dt |>
 sum_box_p
 ```
 
+```{r}
+head(merge_dt)
+```
+
+```{r}
+sp_dt <- merge_dt |>
+  group_by(species, note) |>
+  summarize(detected = n()) |>
+  ungroup() |>
+  complete(species, note, fill = list(detected = 0))
+```
+
+```{r}
+sp_bar_p <- sp_dt |>
+  filter(!is.na(species)) |>
+  mutate(
+    condition = case_when(
+        note == "brain_dna_capture" ~ "Capture: DNA",
+        note == "brain_rna_capture" ~ "Capture: RNA",
+        note == "brain_dna_wgs" ~ "Bulk WGS: DNA",
+        TRUE ~ "other"
+      )
+    ) |>
+  ggplot(aes(y = fct_reorder(species, detected), x = detected, fill = condition)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = c("#0E7175","#FD7901","#C35BCA")) +
+  theme_bw()
+
+sp_bar_p
+```
+
+```{r}
+ggsave(
+  here::here("charts/species_dna_rna_compare1.pdf"),
+  sp_bar_p,
+  width = 6,
+  height = 6
+)
+```
+
+```{r}
+patient_abundance_sum_dt |>
+  group_by(note) |>
+  summarise(
+    nonzero = sum(total_RPKMF > 0),
+    n_specimens = n()
+    )
+```
 
 
 
