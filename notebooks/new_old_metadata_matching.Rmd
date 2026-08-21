@@ -1,0 +1,1107 @@
+---
+title: "compare new and old metadata"
+output: html_notebook
+---
+
+```{r}
+# load libraries
+library(here)
+library(data.table)
+library(stringr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(readxl)
+library(ggpubr)
+source(here::here("src/parse_sample_id.R"))
+```
+
+```{r}
+complete_meta_dt <- read_excel(
+  here::here("metadata/complete/brain_virome_metadata.v2.xlsx")
+) |>
+  mutate(
+    sample_ID = case_when(
+      Pool == "p1733" ~ Alt_ID2,
+      Pool == "p1849" ~ Alt_ID2,
+      Pool == "p1894" ~ gsub("_B", "_1B", Alt_ID2),
+      TRUE ~ Barcode
+      ),
+    tissue = `Brain Region\r\n`
+    )
+```
+
+```{r}
+colnames(complete_meta_dt)
+```
+
+```{r}
+complete_meta_dt |>
+  distinct(tissue)
+```
+
+
+
+```{r}
+complete_meta_dt |>
+  filter(is.na(tissue))
+```
+
+```{r}
+complete_meta_dt |>
+  filter(Pool != "x5") |>
+  mutate(
+    patient_ID = gsub("-IT$|-FCX$|-OCC$", "", patient_ID)
+  ) |>
+  distinct(patient_ID, Age, Diagnosis) |>
+  arrange(patient_ID)
+```
+
+
+
+# Donor Age at Death ~ AD
+```{r}
+age_p <- complete_meta_dt |>
+  filter(Pool != "x5") |>
+  mutate(
+    patient_ID = gsub("-IT$|-FCX$|-OCC$", "", patient_ID)
+  ) |>
+  distinct(patient_ID, Age, Diagnosis) |>
+  ggplot(aes(x = Diagnosis, y = Age)) +
+  geom_boxplot(outlier.shape = NA, fill = "grey70") +
+  geom_point(color = "grey25") +
+  stat_compare_means(method = "wilcox.test") +
+  theme_bw() +
+  labs(
+    x = "Alzheimer's disease diagnosis",
+    y = "Age at death"
+  )
+
+age_p
+```
+
+```{r}
+ggsave(
+  here::here("charts/AD_status_age_at_death.pdf"),
+  age_p,
+  width = 5,
+  height = 4
+)
+```
+
+load tax tables
+```{r}
+tax_file_list <- c(
+  here::here("data/tax_profiles/esviritu_p2058.tax_profile.tsv"),
+  here::here("data/tax_profiles/esviritu_p1733.tax_profile.tsv"),
+  here::here("data/tax_profiles/esviritu_p1849.tax_profile.tsv"),
+  here::here("data/tax_profiles/esviritu_p1894.tax_profile.tsv")
+)
+
+
+esv_tax_dt <- rbindlist(lapply(tax_file_list, fread))
+
+esv_tax_dt <- esv_tax_dt |>
+  filter(
+    read_count >= 10,
+    !genus %in% c(
+      "g__Betacoronavirus", "g__Gammaretrovirus", "g__Respirovirus",
+      "g__Lentivirus", "g__Alphacoronavirus", "g__Orthorubulavirus",
+      "g__Enterovirus"
+      ),
+    !species %in% c(
+      "s__Betapapillomavirus 1", "s__Betapapillomavirus 2", 
+      "s__Betapapillomavirus 3", "s__Human papillomavirus",
+      "s__Triatovirus nigereginacellulae", "s__Lepidopteran ambidensovirus 1",
+      "s__Scythevirus dianchis", "s__Blattambidensovirus incertum1", 
+      "s__Pigeon aviadenovirus B", "s__Alphainfluenzavirus influenzae"
+      ),
+    !grepl("s__unclassified", species)
+    ) |>
+  separate(sample_ID, c("sample_ID", "Pool"), sep = "[.]") 
+```
+
+```{r}
+esv_tax_dt |>
+  distinct(species)
+```
+
+```{r}
+tax_fmt_dt <- esv_tax_dt |>
+  mutate(
+    sample_ID = gsub("-A$", "", sample_ID),
+    sample_ID = case_when(
+      sample_ID == "SEVAD_BF5" ~ "SEVAD_2BF5",
+      sample_ID == "SEVAD_BH5" ~ "SEVAD_1BO5",
+      sample_ID == "SEVAD_BO5" ~ "SEVAD_1BO5",
+      TRUE ~ sample_ID
+    )
+    )
+```
+
+
+```{r}
+anti_join(
+  tax_fmt_dt,
+  complete_meta_dt,
+  by = c("sample_ID", "Pool")
+) |>
+  filter(
+    !grepl("CMMR", sample_ID), # remove controls
+    !grepl("-B$", sample_ID), # remove alternative conditions
+    !grepl("-C$", sample_ID) # remove alternative conditions
+    ) 
+```
+
+```{r}
+anti_join(
+  complete_meta_dt,
+  tax_fmt_dt,
+  by = c("sample_ID", "Pool")
+) |>
+  filter(
+    !grepl("CMMR", sample_ID), # remove controls
+    Pool != "x5" # remove nonexistent pool
+    ) 
+```
+
+merge metadata and tax profiles
+```{r}
+merge_dt <- merge(
+  tax_fmt_dt,
+  complete_meta_dt,
+  by = c("sample_ID", "Pool"),
+  all.y = T
+) |>
+  filter(
+    !grepl("CMMR", sample_ID), # remove controls
+    Pool != "x5" # remove nonexistent pool
+    ) 
+```
+
+```{r}
+merge_dt |> distinct(sample_ID)
+```
+
+```{r}
+tax_fmt_dt |> distinct(sample_ID)
+
+```
+
+
+```{r}
+merge_dt |>
+  filter(is.na(species))
+```
+
+
+
+# Virome ~ metadata association analysis
+
+## QC: build a clean, one-row-per-sample analysis table
+
+We work at the level of the sequenced sample (a brain region from a donor).
+Samples with no virus passing the filters are TRUE negatives and are kept as
+zeros (they still contribute to prevalence denominators).
+
+```{r qc-samples}
+# one row per real sample, with complete donor/tissue metadata
+sample_meta <- complete_meta_dt |>
+  filter(!is.na(sample_ID), !grepl("CMMR", sample_ID), Pool != "x5") |>
+  mutate(
+    patient_ID = gsub("-IT$|-FCX$|-OCC$", "", patient_ID),
+    braak_score = case_when(
+      `B&B Scale` == "2-3" ~ 2.5,
+      `B&B Scale` == "3-4" ~ 3.5,
+      `B&B Scale` == "Not Applicable" ~ 0,
+      TRUE ~ as.numeric(`B&B Scale`)
+    ),
+    braak_score = as.numeric(braak_score)
+  ) |>
+  # collapse any duplicate (sample_ID, Pool) rows to one row per sample
+  distinct(sample_ID, Pool, .keep_all = TRUE) |>
+  transmute(
+    sample_ID, Pool, braak_score,
+    donor        = patient_ID,
+    tissue       = factor(tissue),
+    AD_status    = factor(Diagnosis, levels = c("Control", "AD")),
+    age_at_death = as.numeric(Age)
+  )
+
+n_samples <- nrow(sample_meta)
+
+# confirm the analysis set has NO missing metadata
+missing_report <- colSums(is.na(sample_meta))
+missing_report
+
+# how many samples are viral-negative (no species passes filters)?
+n_negative <- sum(!sample_meta$sample_ID %in% tax_fmt_dt$sample_ID)
+c(n_samples = n_samples, n_viral_negative = n_negative)
+
+# structure: regions per donor (repeated measures live in the 3-region donors)
+table(regions_per_donor = table(sample_meta$donor))
+```
+
+```{r}
+sample_meta |> distinct(tissue)
+```
+
+
+## Focus on the most common virus species
+
+"Most common" = detected in at least `min_detect` samples. Everything below the
+threshold is too sparse for a stable association test.
+
+```{r focal-species}
+# collapse subspecies rows to one abundance per (sample, species)
+det <- tax_fmt_dt |>
+  semi_join(sample_meta, by = c("sample_ID", "Pool")) |>
+  group_by(sample_ID, Pool, species) |>
+  summarise(RPKMF = sum(RPKMF), .groups = "drop")
+
+min_detect <- 10  # tune this threshold
+
+prevalence_tbl <- det |>
+  distinct(sample_ID, Pool, species) |>
+  count(species, name = "n_detected") |>
+  mutate(prevalence = round(n_detected / n_samples, 3)) |>
+  arrange(desc(n_detected))
+
+focal_species <- prevalence_tbl |> filter(n_detected >= min_detect)
+focal_species
+```
+
+
+```{r pa-matrix}
+# presence/absence + abundance for every sample x focal species
+pa <- tidyr::crossing(sample_meta, species = focal_species$species) |>
+  left_join(det, by = c("sample_ID", "Pool", "species")) |>
+  mutate(
+    present   = as.integer(!is.na(RPKMF)),
+    RPKMF     = ifelse(is.na(RPKMF), 0, RPKMF),
+    sp_short  = gsub("^s__", "", species)
+  )
+```
+
+```{r}
+pa |> distinct(tissue)
+```
+
+
+## Descriptive prevalence plots
+
+```{r prev-plots, fig.width=8, fig.height=5}
+# prevalence by AD status
+ad_prev_p <- pa |>
+  group_by(sp_short, AD_status) |>
+  summarise(prev = mean(present), .groups = "drop") |>
+  ggplot(aes(reorder(sp_short, prev), prev, fill = AD_status)) +
+  geom_col(position = position_dodge(), color = "black") +
+  scale_fill_manual(values = c(
+    "#E2D200", "#46ACC8"
+  )) +
+  coord_flip() +
+  labs(x = NULL, y = "Detection prevalence", fill = "AD status",
+       title = "Virus detection prevalence\nby AD status") +
+  theme_bw()
+ad_prev_p
+
+# prevalence by brain region
+tissue_prev_p <- pa |>
+  group_by(sp_short, tissue) |>
+  summarise(prev = mean(present), .groups = "drop") |>
+  ggplot(aes(reorder(sp_short, prev), prev, fill = tissue)) +
+  geom_col(position = position_dodge(), color = "black") +
+  scale_fill_manual(values = c(
+    "#013D5A", "#FCF3E3", "#708C69", "#E4A25B"
+  )) +
+  coord_flip() +
+  labs(x = NULL, y = "Detection prevalence", fill = "Brain region",
+       title = "Virus detection prevalence\nby brain region") +
+  theme_bw()
+tissue_prev_p
+```
+
+
+```{r}
+ggsave(
+  here::here("charts/AD_status_virus_prev_col1.pdf"),
+  ad_prev_p,
+  width = 5,
+  height = 4
+)
+```
+
+```{r}
+ggsave(
+  here::here("charts/brain_tissue_virus_prev_col1.pdf"),
+  tissue_prev_p,
+  width = 5,
+  height = 4
+)
+```
+
+
+## Association testing
+
+Three complementary tests per species, FDR-corrected (Benjamini-Hochberg)
+across species within each variable:
+
+- **tissue** — sample-level variable, tested with Fisher's exact test on
+  presence x region.
+- **AD_status / age_at_death** — donor-level variables. Because most donors
+  contribute >1 sample, we test these two ways:
+  - **(A) donor aggregation** — collapse to one observation per donor
+    (present if detected in ANY region), then Fisher (AD) / logistic (age).
+  - **(B) mixed-effects GLMM** — sample-level logistic regression with a random
+    intercept per donor, adjusting AD, age, and tissue simultaneously.
+
+```{r assoc-libs}
+library(purrr)
+library(broom)
+library(lme4)
+library(broom.mixed)
+```
+
+### Tissue (sample level)
+
+```{r assoc-tissue}
+tissue_res <- map_dfr(focal_species$species, function(sp) {
+  d  <- filter(pa, species == sp)
+  ft <- fisher.test(table(d$tissue, d$present),
+                    simulate.p.value = TRUE, B = 1e4)
+  tibble(species = gsub("^s__", "", sp), test = "Fisher presence~tissue",
+         p.value = ft$p.value)
+}) |>
+  mutate(p.adj = p.adjust(p.value, "BH")) |>
+  arrange(p.value)
+tissue_res
+```
+
+
+```{r}
+pa |>
+  filter(species == "s__Adeno-associated virus") |>
+  group_by(tissue) |>
+  summarise(total_present = sum(present), n_specimens = n())
+```
+
+
+### AD status & age — (A) donor-aggregated
+
+```{r assoc-donor}
+donor_pa <- pa |>
+  group_by(donor, species, AD_status, age_at_death, braak_score) |>
+  summarise(present = as.integer(any(present == 1)), .groups = "drop")
+
+donor_res <- map_dfr(focal_species$species, function(sp) {
+  d  <- filter(donor_pa, species == sp)
+  ft <- fisher.test(table(d$AD_status, d$present))         # AD: donor-level OR
+  gl <- glm(present ~ age_at_death, data = d, family = binomial)  # age
+  glbraak <- glm(present ~ braak_score, data = d, family = binomial)  # braak
+  age_row <- coef(summary(gl))["age_at_death", ]
+  braak_row <- coef(summary(glbraak))["braak_score", ]
+
+  tibble(
+    species       = gsub("^s__", "", sp),
+    AD_OR         = unname(ft$estimate),
+    AD_p          = ft$p.value,
+    age_OR_per_yr = unname(exp(coef(gl)["age_at_death"])),
+    age_p         = unname(age_row["Pr(>|z|)"]),
+    braak_OR_per_yr = unname(exp(coef(glbraak)["braak_score"])),
+    braak_p         = unname(braak_row["Pr(>|z|)"])
+  )
+}) |>
+  mutate(AD_p.adj  = p.adjust(AD_p,  "BH"),
+         age_p.adj = p.adjust(age_p, "BH"),
+         braak_p.adj = p.adjust(braak_p, "BH")) |>
+  arrange(AD_p)
+donor_res
+```
+
+
+### AD status & age — (B) mixed-effects GLMM
+
+Model: `present ~ AD_status + scale(age) + tissue + (1 | donor)`.
+Most donors contribute multiple brain regions (70 of 99 donors have all 3), so
+the per-donor random intercept is important here to absorb within-donor
+correlation and avoid pseudo-replication.
+
+**Sparse species cause complete separation** (huge or vanishingly small SEs and
+spurious p ~ 0). We therefore (a) only fit the GLMM to species with enough
+detections, and (b) flag any remaining fit whose SE is implausible as
+unreliable and exclude it from FDR correction.
+
+```{r assoc-glmm, warning=FALSE, message=FALSE}
+glmm_min_detect <- 25  # GLMM needs a reasonable number of positives
+
+glmm_species <- focal_species |> filter(n_detected >= glmm_min_detect) |> pull(species)
+
+glmm_res <- map_dfr(glmm_species, function(sp) {
+  d <- filter(pa, species == sp)
+  m <- tryCatch(
+    glmer(present ~ AD_status + scale(age_at_death) + tissue + (1 | donor),
+          data = d, family = binomial,
+          control = glmerControl(optimizer = "bobyqa",
+                                  optCtrl = list(maxfun = 2e5))),
+    error = function(e) NULL
+  )
+  if (is.null(m)) {
+    return(tibble(species = gsub("^s__", "", sp),
+                  term = c("AD_statusAD", "scale(age_at_death)"),
+                  estimate = NA_real_, std.error = NA_real_, p.value = NA_real_))
+  }
+  broom.mixed::tidy(m, effects = "fixed") |>
+    filter(term %in% c("AD_statusAD", "scale(age_at_death)")) |>
+    transmute(species = gsub("^s__", "", sp), term, estimate, std.error, p.value)
+}) |>
+  # guard against separation: trust only plausibly-scaled SEs
+  mutate(reliable = is.finite(std.error) & std.error > 0.05 & std.error < 5) |>
+  group_by(term) |>
+  mutate(p.adj = ifelse(reliable, p.adjust(ifelse(reliable, p.value, NA), "BH"), NA_real_)) |>
+  ungroup() |>
+  arrange(term, p.value)
+glmm_res
+```
+
+
+### Combined summary
+
+```{r assoc-summary}
+summary_tbl <- donor_res |>
+  select(species, AD_OR, AD_p.adj, age_OR_per_yr, age_p.adj) |>
+  left_join(
+    glmm_res |>
+      pivot_wider(id_cols = species, names_from = term,
+                  values_from = c(estimate, p.adj)),
+    by = "species"
+  ) |>
+  left_join(tissue_res |> select(species, tissue_p.adj = p.adj),
+            by = "species") |>
+  arrange(AD_p.adj)
+summary_tbl
+```
+
+
+## Abundance-based tests (two-part / hurdle framing)
+
+Viral abundance is zero-inflated, so we treat it as a **two-part (hurdle)**
+process and keep the two parts separate:
+
+- **Part 1 - prevalence:** is the virus *detected* at different rates? This is
+  already covered by the presence/absence tests above (Fisher / GLMM).
+- **Part 2 - load given presence:** *among samples where the virus is detected*,
+  is the abundance (`RPKMF`) higher? This is the section below. We drop zeros
+  here **on purpose** so this arm reflects load only, not prevalence.
+
+**Caveat (selection / collider bias):** conditioning on detection means the
+positive subgroups being compared are not the full randomised groups; if a
+variable also shifts prevalence, the conditional-load comparison can be biased.
+The conditional estimand is "among infected samples," which is a valid but
+narrower question. To make the logic transparent we therefore **also run
+unconditional tests that include the zeros** (see the sensitivity subsection at
+the end); those combine prevalence + load into a single abundance shift.
+
+Donor-level variables (AD, age) are aggregated to the mean per-donor abundance
+to respect the repeated-measures structure.
+
+```{r abund-setup}
+# positive samples only, with abundance
+pos <- pa |> filter(present == 1)
+
+# donor-level mean abundance among positive samples (for AD/age)
+donor_abund <- pos |>
+  group_by(donor, species, sp_short, AD_status, age_at_death, braak_score) |>
+  summarise(mean_RPKMF = mean(RPKMF), .groups = "drop")
+```
+
+
+### Tissue - Kruskal-Wallis on abundance (positive samples)
+
+```{r abund-tissue}
+abund_tissue_res <- map_dfr(focal_species$species, function(sp) {
+  d <- filter(pos, species == sp)
+  # need >=2 regions each with >=2 positive samples for a meaningful test
+  ok <- d |> count(tissue) |> filter(n >= 2) |> nrow()
+  if (ok < 2) {
+    return(tibble(species = gsub("^s__", "", sp), n_pos = nrow(d),
+                  p.value = NA_real_))
+  }
+  kw <- kruskal.test(RPKMF ~ tissue, data = d)
+  tibble(species = gsub("^s__", "", sp), n_pos = nrow(d), p.value = kw$p.value)
+}) |>
+  mutate(p.adj = p.adjust(p.value, "BH")) |>
+  arrange(p.value)
+abund_tissue_res
+```
+
+
+### AD status - Wilcoxon on donor-level abundance (positive donors)
+
+```{r abund-ad}
+abund_ad_res <- map_dfr(focal_species$species, function(sp) {
+  d   <- filter(donor_abund, species == sp)
+  grp <- d |> count(AD_status) |> filter(n >= 3)
+  if (nrow(grp) < 2) {
+    return(tibble(species = gsub("^s__", "", sp), n_pos_donor = nrow(d),
+                  p.value = NA_real_))
+  }
+  wt <- wilcox.test(mean_RPKMF ~ AD_status, data = d, exact = FALSE)
+  tibble(species = gsub("^s__", "", sp), n_pos_donor = nrow(d),
+         p.value = wt$p.value)
+}) |>
+  mutate(p.adj = p.adjust(p.value, "BH")) |>
+  arrange(p.value)
+abund_ad_res
+```
+
+
+### Age at death - Spearman correlation (positive donors)
+
+```{r abund-age}
+abund_age_res <- map_dfr(focal_species$species, function(sp) {
+  d <- filter(donor_abund, species == sp)
+  if (nrow(d) < 5) {
+    return(tibble(species = gsub("^s__", "", sp), n_pos_donor = nrow(d),
+                  rho = NA_real_, p.value = NA_real_))
+  }
+  ct <- suppressWarnings(
+    cor.test(d$age_at_death, d$mean_RPKMF, method = "spearman"))
+  tibble(species = gsub("^s__", "", sp), n_pos_donor = nrow(d),
+         rho = unname(ct$estimate), p.value = ct$p.value)
+}) |>
+  mutate(p.adj = p.adjust(p.value, "BH")) |>
+  arrange(p.value)
+abund_age_res
+```
+
+### Braak score - Spearman correlation (positive donors)
+
+```{r abund-braak}
+abund_braak_res <- map_dfr(focal_species$species, function(sp) {
+  d <- filter(donor_abund, species == sp) |> filter(!is.na(braak_score))
+  if (nrow(d) < 5) {
+    return(tibble(species = gsub("^s__", "", sp), n_pos_donor = nrow(d),
+                  rho = NA_real_, p.value = NA_real_))
+  }
+  ct <- suppressWarnings(
+    cor.test(d$braak_score, d$mean_RPKMF, method = "spearman"))
+  tibble(species = gsub("^s__", "", sp), n_pos_donor = nrow(d),
+         rho = unname(ct$estimate), p.value = ct$p.value)
+}) |>
+  mutate(p.adj = p.adjust(p.value, "BH")) |>
+  arrange(p.value)
+abund_braak_res
+```
+
+```{r}
+donor_abund |>
+  filter(!is.na(braak_score)) |>
+  complete(nesting(donor, braak_score), sp_short, fill = list(mean_RPKMF = 0)) |>
+  ggplot(aes(x = braak_score, y = mean_RPKMF)) +
+  geom_point() +
+  geom_smooth() +
+  facet_wrap(~sp_short, scales = "free_y")
+```
+
+```{r}
+pa |>
+  filter(!is.na(braak_score)) |>
+  ggplot(aes(x = braak_score, y = present)) +
+  geom_point(alpha = 0.2) +
+  geom_smooth() +
+  facet_wrap(~sp_short, scales = "free_y")
+```
+
+Modeling outcomes with braak score
+```{r}
+pafilt <- pa |>
+  filter(!is.na(braak_score), sp_short == "Erythroparvovirus primate1") |>
+  mutate(present = as.factor(present))
+
+model_outcome <- glm(present ~ braak_score + age_at_death, data = pafilt, family = binomial)
+summary(model_outcome)
+
+# Linear regression example
+model_lm <- lm(braak_score ~ present + age_at_death, data = pafilt)
+summary(model_lm)
+```
+
+```{r}
+sample_meta |>
+  ggplot(aes(x = age_at_death, y = braak_score)) +
+  geom_point() +
+  geom_smooth()
+```
+
+
+
+
+### Abundance distributions (positive samples)
+
+```{r abund-plots, fig.width=8, fig.height=5}
+ad_ab_box_p <- ggplot(pos, aes(AD_status, RPKMF)) +
+  geom_boxplot(outlier.size = 0.5) +
+  geom_jitter(width = 0.15, alpha = 0.3, size = 0.6) +
+  scale_y_log10() +
+  facet_wrap(~ sp_short, scales = "free_y") +
+  labs(x = "AD status", y = "RPKMF (log10, positives only)",
+       title = "Abundance by AD status") +
+  theme_bw()
+ad_ab_box_p
+
+tissue_ab_box_p <- ggplot(pos, aes(tissue, RPKMF)) +
+  geom_boxplot(outlier.size = 0.5) +
+  geom_jitter(width = 0.15, alpha = 0.3, size = 0.6) +
+  scale_y_log10() +
+  facet_wrap(~ sp_short, scales = "free_y") +
+  labs(x = "Brain region", y = "RPKMF (log10, positives only)",
+       title = "Abundance by brain region") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+tissue_ab_box_p
+```
+
+
+```{r}
+ggsave(
+  here::here("charts/ad_status_ab_box1.pdf"),
+  ad_ab_box_p,
+  width = 9,
+  height = 3.5
+)
+```
+
+```{r}
+ggsave(
+  here::here("charts/tissue_ab_box1.pdf"),
+  tissue_ab_box_p,
+  width = 9,
+  height = 3.5
+)
+```
+
+
+
+### Sensitivity: unconditional tests (zeros included)
+
+Here we repeat the same non-parametric tests but **keep the zeros** (all
+analysis samples, absence = `RPKMF` 0). These answer the combined question
+"is overall abundance shifted?", mixing prevalence and load. Agreement with the
+conditional results argues the conditioning did not distort the picture;
+divergence flags that a signal is driven by prevalence rather than load.
+
+```{r abund-uncond-setup}
+# all samples (zeros included); donor-level mean over ALL that donor's samples
+donor_abund_all <- pa |>
+  group_by(donor, species, sp_short, AD_status, age_at_death) |>
+  summarise(mean_RPKMF = mean(RPKMF), .groups = "drop")  # includes zeros
+```
+
+```{r abund-uncond-tissue}
+# tissue: Kruskal-Wallis on ALL samples (zeros included)
+abund_tissue_all <- map_dfr(focal_species$species, function(sp) {
+  d  <- filter(pa, species == sp)
+  kw <- kruskal.test(RPKMF ~ tissue, data = d)
+  tibble(species = gsub("^s__", "", sp), p.value = kw$p.value)
+}) |>
+  mutate(p.adj = p.adjust(p.value, "BH")) |>
+  arrange(p.value)
+abund_tissue_all
+```
+
+
+```{r abund-uncond-ad}
+# AD: Wilcoxon on donor-level mean abundance (zeros included)
+abund_ad_all <- map_dfr(focal_species$species, function(sp) {
+  d  <- filter(donor_abund_all, species == sp)
+  wt <- wilcox.test(mean_RPKMF ~ AD_status, data = d, exact = FALSE)
+  tibble(species = gsub("^s__", "", sp), p.value = wt$p.value)
+}) |>
+  mutate(p.adj = p.adjust(p.value, "BH")) |>
+  arrange(p.value)
+abund_ad_all
+```
+
+
+```{r abund-uncond-age}
+# age: Spearman on donor-level mean abundance (zeros included)
+abund_age_all <- map_dfr(focal_species$species, function(sp) {
+  d  <- filter(donor_abund_all, species == sp)
+  ct <- suppressWarnings(
+    cor.test(d$age_at_death, d$mean_RPKMF, method = "spearman"))
+  tibble(species = gsub("^s__", "", sp), rho = unname(ct$estimate),
+         p.value = ct$p.value)
+}) |>
+  mutate(p.adj = p.adjust(p.value, "BH")) |>
+  arrange(p.value)
+abund_age_all
+```
+
+
+```{r abund-compare}
+# side-by-side: conditional (positives only) vs unconditional (zeros included)
+abund_compare_ad <- abund_ad_res |>
+  select(species, p.adj_conditional = p.adj) |>
+  full_join(abund_ad_all |> select(species, p.adj_unconditional = p.adj),
+            by = "species") |>
+  arrange(p.adj_unconditional)
+abund_compare_ad
+```
+
+
+# Diversity analysis (vegan)
+
+We test whether the whole-virome **alpha** (within-sample) and **beta**
+(between-sample composition) diversity differ by AD status or age at death.
+Diversity uses **all** virus species passing the QC filters (not just the focal
+ones). Everything is done at the **donor** level to respect the repeated-measures
+structure, and we adjust for the number of brain regions sampled per donor
+(`n_regions`, 1 or 3), which is a sampling-effort confound for richness.
+
+```{r div-matrix}
+library(vegan)
+
+sample_meta2 <- sample_meta |> mutate(sample = paste(sample_ID, Pool, sep = "."))
+
+# sample x species abundance matrix (RPKMF), all species, zeros filled
+comm_mat <- det |>
+  transmute(sample = paste(sample_ID, Pool, sep = "."), species, RPKMF) |>
+  tidyr::pivot_wider(names_from = species, values_from = RPKMF, values_fill = 0) |>
+  tibble::column_to_rownames("sample")
+
+# add all-zero rows for viral-negative samples, then order to metadata
+missing_samples <- setdiff(sample_meta2$sample, rownames(comm_mat))
+if (length(missing_samples)) {
+  zero_block <- matrix(0, nrow = length(missing_samples), ncol = ncol(comm_mat),
+                       dimnames = list(missing_samples, colnames(comm_mat)))
+  comm_mat <- rbind(comm_mat, as.data.frame(zero_block))
+}
+comm_mat <- as.matrix(comm_mat[sample_meta2$sample, , drop = FALSE])
+
+dim(comm_mat)  # samples x species
+```
+
+
+## Alpha diversity
+
+```{r alpha-div}
+alpha_dt <- sample_meta2 |>
+  mutate(richness = specnumber(comm_mat),
+         shannon  = diversity(comm_mat, index = "shannon"))
+
+# donor-level (mean across regions) so each donor counts once
+alpha_donor <- alpha_dt |>
+  group_by(donor, AD_status, age_at_death) |>
+  summarise(richness = mean(richness), shannon = mean(shannon), .groups = "drop")
+
+# AD status: Wilcoxon; age: Spearman
+alpha_tests <- tibble::tibble(
+  metric   = c("shannon", "richness", "shannon", "richness"),
+  variable = c("AD_status", "AD_status", "age_at_death", "age_at_death"),
+  p.value  = c(
+    wilcox.test(shannon  ~ AD_status, data = alpha_donor, exact = FALSE)$p.value,
+    wilcox.test(richness ~ AD_status, data = alpha_donor, exact = FALSE)$p.value,
+    cor.test(alpha_donor$age_at_death, alpha_donor$shannon,  method = "spearman")$p.value,
+    cor.test(alpha_donor$age_at_death, alpha_donor$richness, method = "spearman")$p.value
+  )
+)
+alpha_tests
+```
+
+
+```{r alpha-plots, fig.width=8, fig.height=4}
+alpha_long <- tidyr::pivot_longer(alpha_donor, c(richness, shannon),
+                                  names_to = "metric", values_to = "value")
+
+alpha_ad_p <- ggplot(alpha_long, aes(AD_status, value, fill = AD_status)) +
+  geom_boxplot(outlier.size = 0.5) +
+  scale_fill_manual(values = c(
+    "#E2D200", "#46ACC8"
+  )) +
+  facet_wrap(~ metric, scales = "free_y") +
+  labs(x = "AD status", y = "Donor-level alpha diversity",
+       title = "Alpha diversity by AD status") +
+  theme_bw()
+alpha_ad_p
+
+alpha_age_p <- ggplot(alpha_long, aes(age_at_death, value)) +
+  geom_point(alpha = 0.5, size = 0.8) +
+  geom_smooth(method = "lm", se = TRUE) +
+  facet_wrap(~ metric, scales = "free_y") +
+  labs(x = "Age at death", y = "Donor-level alpha diversity",
+       title = "Alpha diversity vs age") +
+  theme_bw()
+alpha_age_p
+```
+
+
+```{r}
+ggsave(
+  here::here("charts/AD_status_alpha_box1.pdf"),
+  alpha_ad_p,
+  width = 5,
+  height = 4
+)
+```
+
+```{r}
+ggsave(
+  here::here("charts/age_alpha_scatter1.pdf"),
+  alpha_age_p,
+  width = 7,
+  height = 3
+)
+```
+
+
+
+## Beta diversity (PERMANOVA)
+
+Donor-level community = sum of `RPKMF` across a donor's regions, converted to
+relative abundance so total-magnitude effort is removed; `n_regions` still
+enters the model to absorb richness-effort effects. We use Bray-Curtis
+(abundance) and Jaccard (presence/absence). Empty (viral-negative) donors are
+dropped because these distances are undefined for all-zero communities.
+
+```{r beta-permanova}
+set.seed(1)
+
+donor_map  <- setNames(sample_meta2$donor, sample_meta2$sample)
+donor_comm <- rowsum(comm_mat, group = donor_map[rownames(comm_mat)])
+n_reg      <- table(donor_map[rownames(comm_mat)])
+
+keep <- rowSums(donor_comm) > 0            # drop viral-negative donors
+dc   <- donor_comm[keep, , drop = FALSE]
+
+md <- sample_meta2 |>
+  distinct(donor, AD_status, age_at_death) |>
+  mutate(n_regions = as.integer(n_reg[donor]))
+md <- md[match(rownames(dc), md$donor), ]
+
+cat("donors used for beta diversity:", nrow(dc),
+    "  (dropped", sum(!keep), "viral-negative)\n")
+
+dc_rel <- decostand(dc, method = "total")  # relative abundance per donor
+bc     <- vegdist(dc_rel, method = "bray")
+jac    <- vegdist(dc > 0, method = "jaccard")
+
+# marginal PERMANOVA (each term adjusted for the others)
+adonis_bray <- adonis2(bc ~ n_regions + AD_status + age_at_death,
+                       data = md, by = "margin", permutations = 999)
+adonis_jac  <- adonis2(jac ~ n_regions + AD_status + age_at_death,
+                       data = md, by = "margin", permutations = 999)
+adonis_bray
+adonis_jac
+```
+
+
+**Dispersion check (important here).** PERMANOVA can report a spurious "location"
+difference when groups have unequal size *and* unequal within-group dispersion -
+exactly our situation (many AD vs few controls). `betadisper` tests whether the
+groups differ in spread; a significant result means any PERMANOVA signal should
+be interpreted cautiously.
+
+```{r beta-dispersion}
+set.seed(1)
+bd <- betadisper(bc, md$AD_status)
+permutest(bd, permutations = 999)
+```
+
+
+```{r beta-nmds, fig.width=7, fig.height=5, message=FALSE, warning=FALSE}
+set.seed(1)
+nmds <- metaMDS(dc_rel, distance = "bray", trymax = 50, trace = 0)
+
+nmds_scores <- as.data.frame(vegan::scores(nmds, display = "sites")) |>
+  tibble::rownames_to_column("donor") |>
+  left_join(md, by = "donor")
+
+ad_nmds_p <- ggplot(nmds_scores, aes(NMDS1, NMDS2, color = AD_status)) +
+  geom_point(size = 2.5, alpha = 0.8) +
+  stat_ellipse() +
+  scale_color_manual(values = c(
+    "#E2D200", "#46ACC8"
+  )) +
+  labs(title = sprintf("Bray-Curtis NMDS (stress = %.3f)", nmds$stress),
+       colour = "AD status") +
+  theme_bw()
+ad_nmds_p
+
+age_nmds_p <- ggplot(nmds_scores, aes(NMDS1, NMDS2, colour = age_at_death)) +
+  geom_point(size = 2.5, alpha = 0.9) +
+  scale_color_gradient2(low = "grey80", mid = "#FAD77B", high = "#972D15", midpoint = 80) +
+  labs(title = "Bray-Curtis NMDS coloured by age", colour = "Age") +
+  theme_bw()
+age_nmds_p
+```
+
+
+```{r}
+ggsave(
+  here::here("charts/AD_status_NMDS1.pdf"),
+  ad_nmds_p,
+  width = 5,
+  height = 4
+)
+```
+
+```{r}
+ggsave(
+  here::here("charts/age_NMDS1.pdf"),
+  age_nmds_p,
+  width = 5,
+  height = 4
+)
+```
+
+# Virome VS B&B Scale
+
+Braak and Braak (B&B) scale is a more quantitative measurement of 
+brain pathology such as neurofibrillary tangles
+
+```{r}
+
+```
+
+
+
+# Power / sample-size analysis (for future designs)
+
+The AD and age effects are tested at the **donor** level (the effective sample
+size is the number of donors, not samples, because brain regions within a donor
+are repeated measures). The bottleneck is the **imbalance**: many AD donors but
+few non-AD controls. We quantify this two ways below.
+
+```{r power-setup}
+set.seed(1)
+
+# effective (donor-level) group sizes actually used for the AD contrast
+donor_tab <- sample_meta |> distinct(donor, AD_status) |> count(AD_status)
+donor_tab
+n_AD    <- donor_tab$n[donor_tab$AD_status == "AD"]
+n_ctrl  <- donor_tab$n[donor_tab$AD_status == "Control"]
+c(n_AD = n_AD, n_ctrl = n_ctrl)
+
+# Monte-Carlo power for a Fisher's exact test comparing two prevalences.
+# p_ctrl / p_ad = detection prevalence in each donor group.
+power_fisher <- function(p_ctrl, p_ad, n_ctrl, n_ad,
+                         nsim = 1000, alpha = 0.05) {
+  mean(replicate(nsim, {
+    x1 <- rbinom(1, n_ctrl, p_ctrl)
+    x2 <- rbinom(1, n_ad,   p_ad)
+    m  <- matrix(c(x1, n_ctrl - x1, x2, n_ad - x2), nrow = 2)
+    fisher.test(m)$p.value < alpha
+  }))
+}
+```
+
+## Minimum detectable effect for the AD contrast (current cohort)
+
+For a range of baseline (control) prevalences spanning our focal species, what
+odds ratio would we have **80% power** to detect with the current
+`r n_ctrl` control vs `r n_AD` AD donors? We show it at a nominal
+`alpha = 0.05` and at a multiplicity-adjusted `alpha = 0.005` (~Bonferroni for
+10 species).
+
+```{r power-mde-ad}
+inv_or <- function(p1, or) (or * p1 / (1 - p1)) / (1 + or * p1 / (1 - p1))  # p2 from OR
+
+mde_ad <- tidyr::crossing(
+  p_ctrl = c(0.10, 0.25, 0.50),
+  alpha  = c(0.05, 0.005),
+  OR     = seq(1.5, 30, by = 0.5)
+) |>
+  mutate(p_ad  = inv_or(p_ctrl, OR),
+         power = purrr::pmap_dbl(list(p_ctrl, p_ad, alpha),
+                    ~ power_fisher(..1, ..2, n_ctrl, n_AD,
+                                   nsim = 800, alpha = ..3))) |>
+  group_by(p_ctrl, alpha) |>
+  summarise(min_detectable_OR = {
+    hit <- OR[power >= 0.80]
+    if (length(hit)) min(hit) else NA_real_
+  }, .groups = "drop")
+mde_ad
+```
+
+## Power vs cohort balance (design curve)
+
+Holding a plausible effect fixed (control prevalence 25% vs AD 50%, OR = 3), how
+does power grow as we recruit **more control donors**? The current design sits
+at the current number of control donors (dotted vertical line in the plot).
+
+```{r power-balance, fig.width=7, fig.height=4}
+balance_grid <- tidyr::crossing(
+  n_ctrl_try = c(seq(10, 140, by = 10), n_ctrl),
+  scenario   = c("modest (25% vs 40%)", "moderate (25% vs 50%)",
+                 "large (25% vs 65%)")
+) |>
+  mutate(
+    p_ad  = dplyr::recode(scenario,
+              "modest (25% vs 40%)"   = 0.40,
+              "moderate (25% vs 50%)" = 0.50,
+              "large (25% vs 65%)"    = 0.65),
+    power = purrr::map2_dbl(n_ctrl_try, p_ad,
+              ~ power_fisher(0.25, .y, n_ctrl = .x, n_ad = n_AD,
+                             nsim = 1000, alpha = 0.05))
+  )
+
+power_guide_p <- ggplot(balance_grid, aes(n_ctrl_try, power, colour = scenario)) +
+  geom_hline(yintercept = 0.80, linetype = 2, colour = "grey40") +
+  geom_vline(xintercept = n_ctrl, linetype = 3, colour = "grey40") +
+  geom_line() + geom_point(size = 1) +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(x = "Number of control (non-AD) donors  (AD donors fixed)",
+       y = "Power (Fisher, alpha = 0.05)",
+       colour = "Effect size",
+       title = "Power to detect an AD prevalence difference vs # controls") +
+  theme_bw()
+power_guide_p
+```
+
+```{r}
+ggsave(
+  here::here("charts/power_guide_line.pdf"),
+  power_guide_p,
+  width = 6,
+  height = 4
+)
+```
+
+
+
+## Power for the age (continuous) association
+
+Age is tested by correlation at the donor level. The minimum detectable
+|correlation| at 80% power depends on the number of donors contributing
+(all donors for presence-linked tests; only *positive* donors for the
+abundance-conditional Spearman test).
+
+```{r power-age}
+# closed-form detectable Pearson/Spearman r via Fisher z-transform
+detectable_r <- function(n, power = 0.80, alpha = 0.05) {
+  if (n <= 4) return(NA_real_)
+  z <- (qnorm(1 - alpha / 2) + qnorm(power)) / sqrt(n - 3)
+  tanh(z)
+}
+
+n_donor_total <- n_distinct(sample_meta$donor)
+
+# effective N for each abundance-age test = positive donors per species
+age_power <- donor_abund |>
+  count(sp_short, name = "n_pos_donor") |>
+  mutate(min_detectable_rho = round(vapply(n_pos_donor, detectable_r, numeric(1)), 2)) |>
+  arrange(desc(n_pos_donor))
+
+cat("All-donor detectable |r| (n =", n_donor_total, "):",
+    round(detectable_r(n_donor_total), 2), "\n")
+age_power
+```
+
+
+
+
+
+
+
+
