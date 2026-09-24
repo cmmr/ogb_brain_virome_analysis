@@ -1,0 +1,15 @@
+##gff-version 3
+#!gff-spec-version 1.21
+#!processor NCBI annotwriter
+##sequence-region ON023025.1 1 5561
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=10798
+ON023025.1	Genbank	region	1	5561	.	+	.	ID=ON023025.1:1..5561;Dbxref=taxon:10798;collection-date=2015;country=Finland;gbkey=Src;genome=genomic;genotype=2;isolate=AA-28;isolation-source=kidney;mol_type=genomic DNA;nat-host=Homo sapiens;note=hybrid-capture sequencing
+ON023025.1	Genbank	gene	595	2610	.	+	.	ID=gene-NS1;Name=NS1;gbkey=Gene;gene=NS1;gene_biotype=protein_coding
+ON023025.1	Genbank	CDS	595	2610	.	+	0	ID=cds-UQK62729.1;Parent=gene-NS1;Dbxref=NCBI_GP:UQK62729.1;Name=UQK62729.1;gbkey=CDS;gene=NS1;product=NS1;protein_id=UQK62729.1
+ON023025.1	Genbank	CDS	2063	2287	.	+	0	ID=cds-UQK62730.1;Parent=gene-NS1;Dbxref=NCBI_GP:UQK62730.1;Name=UQK62730.1;gbkey=CDS;gene=NS1;product=7.5 kDa protein;protein_id=UQK62730.1
+ON023025.1	Genbank	gene	2603	4948	.	+	.	ID=gene-VP1;Name=VP1;gbkey=Gene;gene=VP1;gene_biotype=protein_coding
+ON023025.1	Genbank	CDS	2603	4948	.	+	0	ID=cds-UQK62731.1;Parent=gene-VP1;Dbxref=NCBI_GP:UQK62731.1;Name=UQK62731.1;gbkey=CDS;gene=VP1;product=VP1;protein_id=UQK62731.1
+ON023025.1	Genbank	gene	3284	4948	.	+	.	ID=gene-VP2;Name=VP2;gbkey=Gene;gene=VP2;gene_biotype=protein_coding
+ON023025.1	Genbank	CDS	3284	4948	.	+	0	ID=cds-UQK62732.1;Parent=gene-VP2;Dbxref=NCBI_GP:UQK62732.1;Name=UQK62732.1;gbkey=CDS;gene=VP2;product=VP2;protein_id=UQK62732.1
+ON023025.1	Genbank	CDS	4869	5153	.	+	0	ID=cds-UQK62733.1;Dbxref=NCBI_GP:UQK62733.1;Name=UQK62733.1;gbkey=CDS;product=11 kDA protein;protein_id=UQK62733.1
+

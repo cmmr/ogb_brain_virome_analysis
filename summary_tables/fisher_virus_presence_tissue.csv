@@ -1,0 +1,11 @@
+species,test,p.value,p.adj
+Adeno-associated virus,Fisher presence~tissue,0.0057994200579942,0.057994200579942
+Roseolovirus humanbeta6a,Fisher presence~tissue,0.0554944505549445,0.277472252774723
+Alphapolyomavirus quintihominis,Fisher presence~tissue,0.151984801519848,0.50661600506616
+Roseolovirus humanbeta6b,Fisher presence~tissue,0.277172282771723,0.692930706929307
+TTV-like mini virus,Fisher presence~tissue,0.390660933906609,0.774636822032083
+Dependoparvovirus primate1,Fisher presence~tissue,0.530846915308469,0.774636822032083
+Erythroparvovirus primate1,Fisher presence~tissue,0.542245775422458,0.774636822032083
+Simplexvirus humanalpha1,Fisher presence~tissue,0.698830116988301,0.786476907864769
+Lymphocryptovirus humangamma4,Fisher presence~tissue,0.707829217078292,0.786476907864769
+Torque teno virus,Fisher presence~tissue,0.867613238676132,0.867613238676132

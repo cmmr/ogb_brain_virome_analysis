@@ -18,53 +18,6 @@ library(treeio)
 library(ggtree)
 ```
 
-```{r}
-jp1 <- read.jplace(here::here("data/b19_phylo/epang_attempt_3000nt/epa_result.jplace"))
-
-```
-
-```{r}
-ggtree(jp1, layout = "rectangular") + geom_tippoint(aes(size = nplace, color = nplace), alpha = 0.6)
-```
-
-```{r}
-tr1 <- read.tree(here::here("data/b19_phylo/epang_attempt_3000nt/epa_result.newick"))
-```
-
-```{r}
-ggtree(tr1, layout = "rectangular") + geom_tippoint(alpha = 0.6) +
-  geom_tiplab()
-```
-
-
-```{r}
-plc_all <- get.placements(jp1, by = "all") |> as_tibble()
-
-# Best placement only: one row per query, max LWR.
-plc <- get.placements(jp1, by = "best") |> as_tibble()
-
-glimpse(plc)
-```
-
-```{r}
-spread <- plc_all |>
-  group_by(name) |>
-  summarise(
-    n_edges     = n(),
-    top_lwr     = max(like_weight_ratio),
-    lwr_top2    = sum(sort(like_weight_ratio, decreasing = TRUE)[1:2], na.rm = TRUE),
-    .groups     = "drop"
-  ) |>
-  arrange(top_lwr)
- 
-print(spread, n = 20)
-```
-
-
-```{r}
-edpl <- fread(here::here("data/b19_phylo/epang_attempt_3000nt/edpl_list.csv"))
-
-```
 
 ```{r}
 gb_meta <- fread(
@@ -75,75 +28,27 @@ gb_meta <- fread(
   rename(label = Accession)
 ```
 
-```{r}
-tipann <- tibble(label = tr1$tip.label) |>
-  left_join(gb_meta, by = "label") |>
-  mutate(Genotype = case_when(
-    is.na(Genotype) ~ "this study",
-    Genotype == "" ~ "unlabeled",
-    TRUE ~ toupper(Genotype)
-    ),
-    mlab2 = case_when(
-      grepl("_consensus", label) ~ gsub("NC_", "", label),
-      TRUE ~ label
-    ),
-    mlab2 = str_remove(mlab2, "^[^_]*_"),
-    mlab2 = gsub("_consensus$", "", mlab2),
-    mlab2 = case_when(
-      grepl("XX-0", mlab2) ~ str_replace(mlab2, "^([^-]*-[^-]*).*$", "\\1"),
-      grepl("HELTHY|MODAD|SEVAD|H-H", mlab2) ~ str_remove(mlab2, "\\..*"),
-      TRUE ~ mlab2
-    )
-  ) 
-
-```
 
 ```{r}
-donor_meta_dt <- read_excel(
+old_donor_meta_dt <- read_excel(
   here::here("metadata/donors/simple_donor_meta1.xlsx")
 )
 ```
 
 ```{r}
-
-tip_merge <- merge(
-  tipann,
-  donor_meta_dt,
-  by.x = "mlab2",
-  by.y = "join_col",
-  all.x = T
+complete_meta_dt <- read_excel(
+  here::here("metadata/complete/brain_virome_metadata.v5.xlsx")
 ) |>
-  mutate(big_label = paste(Collection_Date, AD_status, age_at_death, sep = " ")) |>
-  relocate(mlab2, .after = last_col())
+  mutate(
+    sample_ID = case_when(
+      Pool == "p1733" ~ Alt_ID2,
+      Pool == "p1849" ~ Alt_ID2,
+      Pool == "p1894" ~ gsub("_B", "_1B", Alt_ID2),
+      TRUE ~ Barcode
+      ),
+    tissue = `Brain Region\r\n`
+    )
 ```
-
-
-
-
-
-```{r}
-
-p <- ggtree(tr1, layout = "roundrect", size = 0.3) %<+% tip_merge
-
-p1 <- p +
-  geom_tippoint(
-    aes(color = Genotype),
-    alpha = 0.8
-  ) +
-  geom_tiplab(aes(label = Genotype),
-              size = 2, offset = 0.002, align = FALSE) +
-  theme_tree2() +
-  scale_color_manual(
-    values = c("cadetblue", "lightblue",
-               "purple", "orangered",
-               "grey")
-  )
-
-p1
-```
-
-
-
 
 ```{r}
 jp2 <- read.jplace(here::here("data/b19_phylo/epang_attempt_1000nt/epa_result.jplace"))
@@ -186,18 +91,60 @@ tipanno <- tibble(label = tr2$tip.label) |>
     )
   ) 
 
+tip_fmt_dt <- tipanno |>
+#  mutate(
+#    sample_ID = gsub("-A$", "", mlab2),
+#    sample_ID = case_when(
+#      sample_ID == "SEVAD_BF5" ~ "SEVAD_2BF5",
+#      sample_ID == "SEVAD_BH5" ~ "SEVAD_1BO5",
+#      sample_ID == "SEVAD_BO5" ~ "SEVAD_1BO5",
+#      TRUE ~ sample_ID
+#    )
+#    ) |>
+  mutate(
+    sample_ID = case_when(
+      grepl("_consensus", label) ~ gsub("NC_", "", label),
+      TRUE ~ label
+    ),
+    sample_ID = str_remove(sample_ID, "^[^_]*_")
+  ) |>
+  separate(sample_ID, c("sample_ID", "Pool"), sep = "[.]") |>
+  mutate(
+    sample_ID = gsub("-A$", "", sample_ID),
+    sample_ID = gsub("-B$", "", sample_ID),
+    sample_ID = gsub("-C$", "", sample_ID)
+  )
 ```
 
 ```{r}
+anti_join(
+  tip_fmt_dt,
+  complete_meta_dt,
+  by = "sample_ID"
+)
+```
+
+
+
+```{r}
 tip_mergeo <- merge(
-  tipanno,
-  donor_meta_dt,
-  by.x = "mlab2",
-  by.y = "join_col",
+  tip_fmt_dt,
+  complete_meta_dt,
+  by = "sample_ID",
   all.x = T
 ) |>
-  mutate(big_label = paste(Collection_Date, AD_status, age_at_death, sep = " ")) |>
-  relocate(mlab2, .after = last_col())
+  mutate(est_birth_year = case_when(
+    !is.na(`Year of Death`) ~ `Year of Death` - Age,
+    TRUE ~ NA
+    )
+  ) |>
+  mutate(
+    big_label = case_when(
+      !is.na(Diagnosis) ~ paste(est_birth_year, Diagnosis, sep = ", "),
+      TRUE ~ NA
+      )
+    ) |>
+  relocate(sample_ID, .after = last_col())
 ```
 
 ```{r}
@@ -210,8 +157,8 @@ po1 <- po +
     aes(color = Genotype),
     alpha = 0.8
   ) +
-  #geom_tiplab(aes(label = big_label),
-  #            size = 2, offset = 0.002, align = FALSE) +
+  geom_tiplab(aes(label = big_label),
+              size = 2, offset = 0.002, align = FALSE) +
   theme_tree2() +
   scale_color_manual(
     values = c("cadetblue", "lightblue",
@@ -224,12 +171,14 @@ po1
 
 ```{r}
 ggsave(
-  here::here("charts/parvo_b19_tree_1000nt_1.pdf"),
+  here::here("charts/parvo_b19_tree_1000nt_2.pdf"),
   po1,
-  width = 9,
-  height = 7
+  width = 8,
+  height = 11
 )
 ```
+
+
 
 
 # NS1 gene tree
@@ -271,7 +220,7 @@ ns_tipann <- tibble(label = nstree1$tip.label) |>
 ```{r}
 tip_merge_ns <- merge(
   ns_tipann,
-  donor_meta_dt,
+  old_donor_meta_dt,
   by.x = "mlab2",
   by.y = "join_col",
   all.x = T

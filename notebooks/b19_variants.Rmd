@@ -15,6 +15,7 @@ library(readxl)
 library(ggpubr)
 source(here::here("src/parse_sample_id.R"))
 library(ape)
+library(gggenomes)
 ```
 
 
@@ -113,11 +114,18 @@ head(merge_dt)
 merge_dt |>
   filter(AF >0, AF < 1)
 ```
+```{r}
+first_35 <- as.list(merge_dt |> distinct(patient_ID) %>% head(n=35))$patient_ID
+
+last_35 <- as.list(merge_dt |> distinct(patient_ID) %>% tail(n=35))$patient_ID
+
+```
 
 
 
 ```{r}
-muts_p <- merge_dt |>
+muts1_p <- merge_dt |>
+  filter(patient_ID %in% first_35) |>
   mutate(
     alt_seq = case_when(
       allele_type == "alt" & AF < 0.5 ~ "",
@@ -148,21 +156,73 @@ muts_p <- merge_dt |>
     panel.grid.major.x = element_blank(),
     panel.grid.minor.x = element_blank()
     )
-muts_p
+muts1_p
 ```
+
+
+```{r}
+muts2_p <- merge_dt |>
+  filter(patient_ID %in% last_35) |>
+  mutate(
+    alt_seq = case_when(
+      allele_type == "alt" & AF < 0.5 ~ "",
+      is.na(alt_seq) ~ "",
+      TRUE ~ alt_seq
+    ),
+    patient_ID = gsub("^XX-", "", patient_ID)
+  ) |>
+  ggplot(aes(x = pos, y = uid, color = alt_seq, shape = alt_seq, size = alt_seq)) +
+  geom_point() +
+  scale_shape_manual(values = c(20, 73, 73, 73, 73), name = "SNP") +
+  scale_size_manual(values = c(0.4, 3, 3, 3, 3), name = "SNP") +
+  scale_color_manual(values = c(
+    "grey85", "#52777A","#542437","#C02942","#D95B43","#ECD078"
+  ),
+  name = "SNP") +
+  facet_grid(rows = vars(patient_ID), cols = vars(contig), scale = "free_y", space = "free") +
+  labs(
+    x = "Genome Position",
+    y = "Genome Reconstructions"
+  ) +
+  coord_cartesian(xlim = c(100, 5100)) +
+  theme_bw() +
+  theme(
+    panel.spacing = unit(0, "lines"),
+    axis.text.y = element_blank(),
+    strip.text.y = element_text(angle = 0),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank()
+    )
+muts2_p
+```
+
 
 ```{r}
 ggsave(
   here::here("charts/b19_mutation_plot1.pdf"),
-  muts_p,
-  height = 13,
+  muts1_p,
+  height = 9,
   width = 8
 )
 
 ggsave(
   here::here("charts/b19_mutation_plot1.png"),
-  muts_p,
-  height = 13,
+  muts1_p,
+  height = 9,
+  width = 8
+)
+
+ggsave(
+  here::here("charts/b19_mutation_plot2.pdf"),
+  muts2_p,
+  height = 9,
+  width = 8
+)
+
+ggsave(
+  here::here("charts/b19_mutation_plot2.png"),
+  muts2_p,
+  height = 9,
   width = 8
 )
 ```
@@ -170,7 +230,8 @@ ggsave(
 
 ```{r}
 # private SNPs only
-private_p <- merge_dt |>
+private1_p <- merge_dt |>
+  filter(patient_ID %in% first_35) |>
   mutate(
     alt_seq = case_when(
       allele_type == "alt" & AF < 0.5 ~ "",
@@ -211,20 +272,84 @@ private_p <- merge_dt |>
     panel.grid.major.x = element_blank(),
     panel.grid.minor.x = element_blank()
     )
-private_p
+private1_p
 ```
+
+
+```{r}
+# private SNPs only
+private2_p <- merge_dt |>
+  filter(patient_ID %in% last_35) |>
+  mutate(
+    alt_seq = case_when(
+      allele_type == "alt" & AF < 0.5 ~ "",
+      is.na(alt_seq) ~ "",
+      TRUE ~ alt_seq
+    ),
+    patient_ID = gsub("^XX-", "", patient_ID)
+  ) |>
+  group_by(pos, alt_seq) |>
+  mutate(
+    n_patients = n_distinct(patient_ID),
+    private = case_when(
+      n_patients == 1 ~ "private",
+      TRUE ~ ""
+    )
+  ) |>
+  ungroup() |>
+  ggplot(aes(x = pos, y = uid, color = private, shape = private, size = private)) +
+  geom_point() +
+  scale_shape_manual(values = c(20, 73, 73, 73, 73), name = "private SNP") +
+  scale_size_manual(values = c(0.4, 3, 3, 3, 3), name = "private SNP") +
+  scale_color_manual(values = c(
+    "grey85", "purple"
+    ),
+    name = "private SNP"
+  ) +
+  facet_grid(rows = vars(patient_ID), cols = vars(contig), scale = "free_y", space = "free") +
+  labs(
+    x = "Genome Position",
+    y = "Genome Reconstructions"
+  ) +
+  coord_cartesian(xlim = c(100, 5100)) +
+  theme_bw() +
+  theme(
+    panel.spacing = unit(0, "lines"),
+    axis.text.y = element_blank(),
+    strip.text.y = element_text(angle = 0),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank()
+    )
+private2_p
+```
+
+
 ```{r}
 ggsave(
   here::here("charts/b19_private_muts_plot1.pdf"),
-  private_p,
-  height = 13,
+  private1_p,
+  height = 9,
   width = 8
 )
 
 ggsave(
   here::here("charts/b19_private_muts_plot1.png"),
-  private_p,
-  height = 13,
+  private1_p,
+  height = 9,
+  width = 8
+)
+
+ggsave(
+  here::here("charts/b19_private_muts_plot2.pdf"),
+  private2_p,
+  height = 9,
+  width = 8
+)
+
+ggsave(
+  here::here("charts/b19_private_muts_plot2.png"),
+  private2_p,
+  height = 9,
   width = 8
 )
 ```
@@ -402,11 +527,61 @@ wilcox.test(
 )
 ```
 
+Illustrate B19 genome map
+
+```{r}
+gff_dt <- fread(
+  here::here("data/b19_var_genome/ON023025.1.gff3"),
+  col.names = c(
+    "acc", 
+    "source",
+    "ftype",
+    "start",
+    "end",
+    "b1",
+    "strand",
+    "b2",
+    "info"
+  )
+) %>%
+  mutate(name = gsub(".*Name=", "", info),
+         name = gsub(";.*", "", name)) %>%
+  filter(ftype == "gene") %>%
+  group_by(acc) %>%
+  mutate(length = max(end)) %>%
+  ungroup() %>%
+  mutate(seq_id = acc)
+```
+
+```{r}
+seq_dt <- gff_dt %>% distinct(seq_id, length) %>% 
+  mutate(bin_id = "Parvovirus B19", start = 0, end = length)
+```
 
 
+```{r}
+var_gene_p <- gggenomes(
+  seqs = seq_dt,
+  genes = gff_dt
+) + geom_seq() +
+  geom_gene(fill="cornsilk3", alpha = 0.6,
+            size = 4) +
+  geom_gene_tag(aes(label=name)) +
+  geom_bin_label()
+
+var_gene_p
+```
 
 
-
+```{r}
+ggsave(
+  here::here("charts/b19_genome1.pdf"),
+  plot = var_gene_p,
+  width = 7,
+  height = 3
+  
+)
+```
 
 
 

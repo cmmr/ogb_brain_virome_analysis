@@ -18,40 +18,26 @@ library(forcats)
 ```
 
 
-Load and parse metadata
+
 ```{r}
-meta_pil_dt <- read_excel(
-  here::here("metadata/samples/brain_pilot_fmt_pools_metadata.xlsx")
+complete_meta_dt <- read_excel(
+  here::here("metadata/complete/brain_virome_metadata.v3.xlsx")
 ) |>
   mutate(
-    condition = case_when(
-      grepl("-A", sample_ID) ~ "bulk DNA",
-      grepl("-B", sample_ID) ~ "host depleted DNA",
-      grepl("-C", sample_ID) ~ "bulk RNA",
-      TRUE ~ "other"
+    sample_ID = case_when(
+      Pool == "p1733" ~ Alt_ID2,
+      Pool == "p1849" ~ Alt_ID2,
+      Pool == "p1894" ~ gsub("_B", "_1B", Alt_ID2),
+      TRUE ~ Barcode
+      ),
+    tissue = `Brain Region\r\n`
     )
-  ) |>
-  mutate(tissue = gsub("Brain tissue/", "", sample_description)) |>
-  filter(condition %in% c("bulk DNA", "other")) #only look at hybrid capture DNA for this
-
-meta_hvp_dt <- read_excel(
-  here::here("metadata/samples/brain_hvp_fmt_pools_metadata.xlsx")
-) |>
-  mutate(tissue = gsub("Brain DNA - ", "", sample_description)) |>
-  filter(note == "brain_dna_capture") #only look at hybrid capture DNA for this
-
-meta_dt <- rbind(
-  meta_pil_dt |> select(c(sample_ID, Pool, tissue)),
-  meta_hvp_dt |> select(c(sample_ID, Pool, tissue))
-)
 ```
 
 load tax tables
 ```{r}
 tax_file_list <- c(
-  here::here("data/tax_profiles/esviritu_p2055.tax_profile.tsv"),
   here::here("data/tax_profiles/esviritu_p2058.tax_profile.tsv"),
-  here::here("data/tax_profiles/esviritu_p2059.tax_profile.tsv"),
   here::here("data/tax_profiles/esviritu_p1733.tax_profile.tsv"),
   here::here("data/tax_profiles/esviritu_p1849.tax_profile.tsv"),
   here::here("data/tax_profiles/esviritu_p1894.tax_profile.tsv")
@@ -80,32 +66,135 @@ esv_tax_dt <- esv_tax_dt |>
   separate(sample_ID, c("sample_ID", "Pool"), sep = "[.]") 
 ```
 
+load virus commons names table
 ```{r}
-esv_tax_dt |>
-  distinct(species)
+comms_dt <- read_excel(here::here("metadata/virus_names/virus_common_names.xlsx"))
+
 ```
 
 
+```{r}
+esv_tax_dt |>
+  group_by(species) |>
+  summarize(
+    n = n(),
+    n_specimens = n_distinct(sample_ID)
+  ) |>
+  arrange(desc(n_specimens))
+```
+
+
+```{r}
+tax_fmt_dt <- esv_tax_dt |>
+  mutate(
+    sample_ID = gsub("-A$", "", sample_ID),
+    sample_ID = case_when(
+      sample_ID == "SEVAD_BF5" ~ "SEVAD_2BF5",
+      sample_ID == "SEVAD_BH5" ~ "SEVAD_1BO5",
+      sample_ID == "SEVAD_BO5" ~ "SEVAD_1BO5",
+      TRUE ~ sample_ID
+    )
+    )
+```
+
+
+```{r}
+anti_join(
+  tax_fmt_dt,
+  complete_meta_dt,
+  by = c("sample_ID", "Pool")
+) |>
+  filter(
+    !grepl("CMMR", sample_ID), # remove controls
+    !grepl("-B$", sample_ID), # remove alternative conditions
+    !grepl("-C$", sample_ID) # remove alternative conditions
+    ) 
+```
+
+```{r}
+anti_join(
+  complete_meta_dt,
+  tax_fmt_dt,
+  by = c("sample_ID", "Pool")
+) |>
+  filter(
+    !grepl("CMMR", sample_ID), # remove controls
+    Pool != "x5" # remove nonexistent pool
+    ) 
+# should be 43 samples that were virus-negative appearing in this anti-join
+```
 
 merge metadata and tax profiles
 ```{r}
 merge_dt <- merge(
-  esv_tax_dt,
-  meta_dt,
+  tax_fmt_dt,
+  complete_meta_dt,
   by = c("sample_ID", "Pool"),
   all.y = T
 ) |>
-  filter(!grepl("CMMR", sample_ID)) # remove controls
+  filter(
+    !grepl("CMMR", sample_ID), # remove controls
+    Pool != "x5" # remove nonexistent pool
+    ) 
 ```
 
 ```{r}
-heatmap2_p <- merge_dt |>
+merge_dt |> distinct(sample_ID)
+```
+
+```{r}
+merge_dt |> distinct(patient_ID)
+```
+
+
+```{r}
+merge_dt |>
+  group_by(species) |>
+  summarize(
+    n = n(),
+    n_specimens = n_distinct(sample_ID)
+  ) |>
+  arrange(desc(n_specimens))
+```
+
+```{r}
+merge_dt |>
+  group_by(species) |>
+  summarize(
+    n = n(),
+    n_specimens = n_distinct(sample_ID)
+  ) |>
+  arrange(desc(n_specimens)) |>
+  filter(n_specimens >= 3)
+```
+
+```{r}
+
+
+merge_comms_dt <- merge(
+  merge_dt,
+  comms_dt,
+  by = "species",
+  all.x = T
+)
+  
+```
+
+```{r}
+merge_comms_dt |> distinct(common_name)
+```
+
+
+
+
+```{r}
+heatmap2_p <- merge_comms_dt |>
   mutate(
     species = gsub("^s__", "", species),
     family = gsub("^f__", "", family)
     ) |>
-  complete(nesting(sample_ID, tissue), nesting(species, family), fill = list(RPKMF=0)) |>
-  group_by(species, family, sample_ID, tissue) |>
+  complete(nesting(sample_ID, tissue), nesting(species, common_name, family), fill = list(RPKMF=0)) |>
+  group_by(species, common_name, family, sample_ID, tissue) |>
   summarize(RPKMF = sum(RPKMF)) |>
   filter(!is.na(tissue), !is.na(family)) |>
   ungroup() |>
@@ -114,10 +203,10 @@ heatmap2_p <- merge_dt |>
   ungroup() |>
   ggplot(aes(
     x = sample_ID,
-    y = fct_reorder(species, RPKMF, .fun = function(x) sum(x != 0), .desc = FALSE),
+    y = fct_reorder(common_name, RPKMF, .fun = function(x) sum(x != 0), .desc = FALSE),
     fill = log10(RPKMF)
   )) +
-  geom_tile(color = "grey25") +
+  geom_tile(color = "grey25", linewidth = 0.1) +
   scale_fill_gradient2(
     low = "#f5dfbc",
     mid = "orange",
@@ -133,7 +222,7 @@ heatmap2_p <- merge_dt |>
   theme_bw() +
   labs(
     x = "Brain Specimens",
-    y = "Virus Species",
+    y = "Virus Species (common name)",
     fill = "log10(RPKMF)"
   ) +
   theme(axis.text.x =element_blank(),
@@ -147,25 +236,53 @@ heatmap2_p
 ggsave(
   here::here("charts/brain_virome_atlas_heatmap1.pdf"),
   heatmap2_p,
-  width = 12,
-  height = 5
+  width = 11,
+  height = 6
 )
 ```
 
-```{r}
-merge_dt |> distinct(sample_ID)
-```
 
 
 ```{r}
-merge_dt |>
-  group_by(species) |>
-  summarise(n = n(), perc = n/249) |>
+vir_sum_dt <- merge_comms_dt |>
+  group_by(common_name) |>
+  summarise(n = n(), perc = (n/250)*100) |>
+  filter(n >= 3, !is.na(common_name)) |>
   arrange(desc(n))
 ```
 
 ```{r}
-sp_n_dt <- merge_dt |>
+vir_prev_p <- vir_sum_dt |>
+  mutate(label1 = paste0("n=", n, ", ", perc, "%")) |>
+  ggplot(aes(
+    x = perc, 
+    y = fct_reorder(common_name, n, .desc = FALSE), 
+    label = label1
+    )
+  ) +
+  geom_col(fill = "grey20", width = 0.7) +
+  geom_text(hjust = 0, nudge_x = 0.5, size = 3) +
+  theme_bw() +
+  labs(
+    x = "% specimens with detection",
+    y = "Virus Species (common name)"
+  ) +
+  lims(x = c(0, 62))
+
+vir_prev_p
+```
+
+```{r}
+ggsave(
+  here::here("charts/brain_virome_species_prev1.pdf"),
+  vir_prev_p,
+  width = 6,
+  height = 6
+)
+```
+
+```{r}
+sp_n_dt <- merge_comms_dt |>
   group_by(sample_ID) |>
   summarise(n = n_distinct(species, na.rm = T)) |>
   arrange(desc(n))
@@ -177,14 +294,28 @@ mean(sp_n_dt$n)
 ```
 
 ```{r}
-anti_join(
-  esv_tax_dt,
-  meta_dt,
-  by = "sample_ID"
-) |>
-  distinct(sample_ID)
+sp_p <- sp_n_dt |>
+  ggplot(aes(n)) +
+  geom_histogram(bins = 10, fill = "grey", color = "black") +
+  theme_bw() +
+  labs(
+    x = "# viruses detected",
+    y = "specimen count"
+  ) +
+  scale_x_continuous(breaks = seq(0, 9, by = 1)) +
+  coord_flip()
+
+sp_p
 ```
 
+```{r}
+ggsave(
+  here::here("charts/brain_virome_specimen_sp_count1.pdf"),
+  sp_p,
+  width = 6,
+  height = 6
+)
+```
 
 
 

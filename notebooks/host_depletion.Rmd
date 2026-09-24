@@ -34,6 +34,11 @@ meta_dt <- read_excel(
   )
 ```
 
+```{r}
+comms_dt <- read_excel(here::here("metadata/virus_names/virus_common_names.xlsx"))
+
+```
+
 load tax profiles
 ```{r}
 
@@ -73,18 +78,41 @@ merge_dt <- merge(
 ```
 
 ```{r}
-heatmap2_p <- merge_dt |>
+
+
+merge_comms_dt <- merge(
+  merge_dt,
+  comms_dt,
+  by = "species",
+  all.x = T
+) |>
   mutate(
-    species = gsub("^s__", "", species),
+    common_name = case_when(
+      is.na(common_name) ~ species,
+      TRUE ~ common_name
+    )
+  )
+  
+```
+
+```{r}
+heatmap2_p <- merge_comms_dt |>
+  mutate(
+    common_name = gsub("^s__", "", common_name),
     family = gsub("^f__", "", family)
     ) |>
-  complete(nesting(sample_ID, condition), nesting(species, family), fill = list(RPKMF=0)) |>
-  group_by(species, family, sample_ID, condition) |>
+  complete(nesting(sample_ID, condition), nesting(common_name, species, family), fill = list(RPKMF=0)) |>
+  group_by(common_name, species, family, sample_ID, condition) |>
   summarize(RPKMF = sum(RPKMF)) |>
   filter(!is.na(condition), !is.na(family)) |>
+  mutate(
+    sample_ID = gsub("HELTHY_", "H", sample_ID),
+    sample_ID = gsub("MODAD_", "M", sample_ID),
+    sample_ID = gsub("SEVAD_", "S", sample_ID),
+    ) |>
   ggplot(aes(
     x = sample_ID,
-    y = species,
+    y = common_name,
     fill = log10(RPKMF)
   )) +
   geom_tile(color = "grey25") +

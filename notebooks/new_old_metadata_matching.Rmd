@@ -18,7 +18,7 @@ source(here::here("src/parse_sample_id.R"))
 
 ```{r}
 complete_meta_dt <- read_excel(
-  here::here("metadata/complete/brain_virome_metadata.v2.xlsx")
+  here::here("metadata/complete/brain_virome_metadata.v3.xlsx")
 ) |>
   mutate(
     sample_ID = case_when(
@@ -49,10 +49,14 @@ complete_meta_dt |>
 
 ```{r}
 complete_meta_dt |>
+  filter(!is.na(tissue)) |>
+  group_by(tissue) |>
+  summarise(n = n())
+```
+
+```{r}
+complete_meta_dt |>
   filter(Pool != "x5") |>
-  mutate(
-    patient_ID = gsub("-IT$|-FCX$|-OCC$", "", patient_ID)
-  ) |>
   distinct(patient_ID, Age, Diagnosis) |>
   arrange(patient_ID)
 ```
@@ -63,9 +67,6 @@ complete_meta_dt |>
 ```{r}
 age_p <- complete_meta_dt |>
   filter(Pool != "x5") |>
-  mutate(
-    patient_ID = gsub("-IT$|-FCX$|-OCC$", "", patient_ID)
-  ) |>
   distinct(patient_ID, Age, Diagnosis) |>
   ggplot(aes(x = Diagnosis, y = Age)) +
   geom_boxplot(outlier.shape = NA, fill = "grey70") +
@@ -125,7 +126,13 @@ esv_tax_dt <- esv_tax_dt |>
 esv_tax_dt |>
   distinct(species)
 ```
+load virus commons names table
+```{r}
+comms_dt <- read_excel(here::here("metadata/virus_names/virus_common_names.xlsx"))
 
+```
+
+format
 ```{r}
 tax_fmt_dt <- esv_tax_dt |>
   mutate(
@@ -136,8 +143,10 @@ tax_fmt_dt <- esv_tax_dt |>
       sample_ID == "SEVAD_BO5" ~ "SEVAD_1BO5",
       TRUE ~ sample_ID
     )
-    )
+    ) 
+
 ```
+
 
 
 ```{r}
@@ -179,6 +188,7 @@ merge_dt <- merge(
     ) 
 ```
 
+
 ```{r}
 merge_dt |> distinct(sample_ID)
 ```
@@ -196,13 +206,16 @@ merge_dt |>
 
 
 
+
+
 # Virome ~ metadata association analysis
 
 ## QC: build a clean, one-row-per-sample analysis table
 
 We work at the level of the sequenced sample (a brain region from a donor).
 Samples with no virus passing the filters are TRUE negatives and are kept as
-zeros (they still contribute to prevalence denominators).
+zeros (they still contribute to prevalence denominators). Per clinical
+confirmation, `Not Applicable` represents Braak stage 0.
 
 ```{r qc-samples}
 # one row per real sample, with complete donor/tissue metadata
@@ -214,7 +227,7 @@ sample_meta <- complete_meta_dt |>
       `B&B Scale` == "2-3" ~ 2.5,
       `B&B Scale` == "3-4" ~ 3.5,
       `B&B Scale` == "Not Applicable" ~ 0,
-      TRUE ~ as.numeric(`B&B Scale`)
+      TRUE ~ suppressWarnings(as.numeric(`B&B Scale`)) ## making braak score numeric
     ),
     braak_score = as.numeric(braak_score)
   ) |>
@@ -225,7 +238,9 @@ sample_meta <- complete_meta_dt |>
     donor        = patient_ID,
     tissue       = factor(tissue),
     AD_status    = factor(Diagnosis, levels = c("Control", "AD")),
-    age_at_death = as.numeric(Age)
+    age_at_death = as.numeric(Age),
+    sex          = factor(Gender),
+    biobank      = factor(Biobank)
   )
 
 n_samples <- nrow(sample_meta)
@@ -274,8 +289,13 @@ focal_species
 
 ```{r pa-matrix}
 # presence/absence + abundance for every sample x focal species
-pa <- tidyr::crossing(sample_meta, species = focal_species$species) |>
-  left_join(det, by = c("sample_ID", "Pool", "species")) |>
+pa <- merge(
+  tidyr::crossing(sample_meta, species = focal_species$species),
+  det,
+  by = c("sample_ID", "Pool", "species"),
+  all.x = T
+)|>
+  left_join(comms_dt, by = "species") |>
   mutate(
     present   = as.integer(!is.na(RPKMF)),
     RPKMF     = ifelse(is.na(RPKMF), 0, RPKMF),
@@ -288,14 +308,21 @@ pa |> distinct(tissue)
 ```
 
 
+```{r}
+pa |>
+  group_by(common_name, AD_status) |>
+  summarise(prev = sum(present) / n())
+```
+
+
 ## Descriptive prevalence plots
 
 ```{r prev-plots, fig.width=8, fig.height=5}
 # prevalence by AD status
 ad_prev_p <- pa |>
-  group_by(sp_short, AD_status) |>
-  summarise(prev = mean(present), .groups = "drop") |>
-  ggplot(aes(reorder(sp_short, prev), prev, fill = AD_status)) +
+  group_by(common_name, AD_status) |>
+  summarise(prev = sum(present) / n()) |>
+  ggplot(aes(reorder(common_name, prev), prev, fill = AD_status)) +
   geom_col(position = position_dodge(), color = "black") +
   scale_fill_manual(values = c(
     "#E2D200", "#46ACC8"
@@ -308,9 +335,9 @@ ad_prev_p
 
 # prevalence by brain region
 tissue_prev_p <- pa |>
-  group_by(sp_short, tissue) |>
-  summarise(prev = mean(present), .groups = "drop") |>
-  ggplot(aes(reorder(sp_short, prev), prev, fill = tissue)) +
+  group_by(common_name, tissue) |>
+  summarise(prev = sum(present) / n()) |>
+  ggplot(aes(reorder(common_name, prev), prev, fill = tissue)) +
   geom_col(position = position_dodge(), color = "black") +
   scale_fill_manual(values = c(
     "#013D5A", "#FCF3E3", "#708C69", "#E4A25B"
@@ -378,6 +405,16 @@ tissue_res <- map_dfr(focal_species$species, function(sp) {
 tissue_res
 ```
 
+```{r}
+write.table(
+  tissue_res,
+  file = here::here("summary_tables/fisher_virus_presence_tissue.csv"),
+  sep = ",",
+  quote = F,
+  row.names = F
+)
+```
+
 
 ```{r}
 pa |>
@@ -390,9 +427,18 @@ pa |>
 ### AD status & age — (A) donor-aggregated
 
 ```{r assoc-donor}
+donor_covars <- sample_meta |>
+  group_by(donor) |>
+  summarise(
+    across(c(AD_status, age_at_death, braak_score, sex, biobank), first),
+    n_regions = n(),
+    .groups = "drop"
+  )
+
 donor_pa <- pa |>
-  group_by(donor, species, AD_status, age_at_death, braak_score) |>
-  summarise(present = as.integer(any(present == 1)), .groups = "drop")
+  group_by(donor, species) |>
+  summarise(present = as.integer(any(present == 1)), .groups = "drop") |>
+  left_join(donor_covars, by = "donor")
 
 donor_res <- map_dfr(focal_species$species, function(sp) {
   d  <- filter(donor_pa, species == sp)
@@ -408,8 +454,8 @@ donor_res <- map_dfr(focal_species$species, function(sp) {
     AD_p          = ft$p.value,
     age_OR_per_yr = unname(exp(coef(gl)["age_at_death"])),
     age_p         = unname(age_row["Pr(>|z|)"]),
-    braak_OR_per_yr = unname(exp(coef(glbraak)["braak_score"])),
-    braak_p         = unname(braak_row["Pr(>|z|)"])
+    braak_OR_per_stage = unname(exp(coef(glbraak)["braak_score"])),
+    braak_p            = unname(braak_row["Pr(>|z|)"])
   )
 }) |>
   mutate(AD_p.adj  = p.adjust(AD_p,  "BH"),
@@ -419,6 +465,15 @@ donor_res <- map_dfr(focal_species$species, function(sp) {
 donor_res
 ```
 
+```{r}
+write.table(
+  donor_res,
+  file = here::here("summary_tables/donor_virus_odds_ratios.csv"),
+  sep = ",",
+  quote = F,
+  row.names = F
+)
+```
 
 ### AD status & age — (B) mixed-effects GLMM
 
@@ -464,6 +519,15 @@ glmm_res <- map_dfr(glmm_species, function(sp) {
 glmm_res
 ```
 
+```{r}
+write.table(
+  glmm_res,
+  file = here::here("summary_tables/donor_mixed_effects_glmm.csv"),
+  sep = ",",
+  quote = F,
+  row.names = F
+)
+```
 
 ### Combined summary
 
@@ -535,6 +599,15 @@ abund_tissue_res <- map_dfr(focal_species$species, function(sp) {
 abund_tissue_res
 ```
 
+```{r}
+write.table(
+  abund_tissue_res,
+  file = here::here("summary_tables/tissue_abundance_detected_only.csv"),
+  sep = ",",
+  quote = F,
+  row.names = F
+)
+```
 
 ### AD status - Wilcoxon on donor-level abundance (positive donors)
 
@@ -555,6 +628,15 @@ abund_ad_res <- map_dfr(focal_species$species, function(sp) {
 abund_ad_res
 ```
 
+```{r}
+write.table(
+  abund_tissue_res,
+  file = here::here("summary_tables/AD_status_abundance_detected_only.csv"),
+  sep = ",",
+  quote = F,
+  row.names = F
+)
+```
 
 ### Age at death - Spearman correlation (positive donors)
 
@@ -574,6 +656,17 @@ abund_age_res <- map_dfr(focal_species$species, function(sp) {
   arrange(p.value)
 abund_age_res
 ```
+
+```{r}
+write.table(
+  abund_age_res,
+  file = here::here("summary_tables/age_abundance_detected_only.csv"),
+  sep = ",",
+  quote = F,
+  row.names = F
+)
+```
+
 
 ### Braak score - Spearman correlation (positive donors)
 
@@ -595,6 +688,16 @@ abund_braak_res
 ```
 
 ```{r}
+write.table(
+  abund_braak_res,
+  file = here::here("summary_tables/braak_abundance_detected_only.csv"),
+  sep = ",",
+  quote = F,
+  row.names = F
+)
+```
+
+```{r}
 donor_abund |>
   filter(!is.na(braak_score)) |>
   complete(nesting(donor, braak_score), sp_short, fill = list(mean_RPKMF = 0)) |>
@@ -604,28 +707,190 @@ donor_abund |>
   facet_wrap(~sp_short, scales = "free_y")
 ```
 
+
 ```{r}
-pa |>
-  filter(!is.na(braak_score)) |>
-  ggplot(aes(x = braak_score, y = present)) +
-  geom_point(alpha = 0.2) +
+donor_abund |>
+  filter(!is.na(age_at_death)) |>
+  complete(nesting(donor, age_at_death), sp_short, fill = list(mean_RPKMF = 0)) |>
+  ggplot(aes(x = age_at_death, y = mean_RPKMF)) +
+  geom_point() +
   geom_smooth() +
   facet_wrap(~sp_short, scales = "free_y")
 ```
 
-Modeling outcomes with braak score
 ```{r}
-pafilt <- pa |>
-  filter(!is.na(braak_score), sp_short == "Erythroparvovirus primate1") |>
-  mutate(present = as.factor(present))
-
-model_outcome <- glm(present ~ braak_score + age_at_death, data = pafilt, family = binomial)
-summary(model_outcome)
-
-# Linear regression example
-model_lm <- lm(braak_score ~ present + age_at_death, data = pafilt)
-summary(model_lm)
+donor_abund |>
+  filter(!is.na(age_at_death)) |>
+  complete(nesting(donor, age_at_death), sp_short, fill = list(mean_RPKMF = 0)) |>
+  mutate(detect = case_when(
+    mean_RPKMF > 0 ~ 1,
+    TRUE ~ 0
+  )) |>
+  ggplot(aes(x = age_at_death, y = detect)) +
+  geom_point(alpha = 0.7) +
+  facet_wrap(~sp_short)
 ```
+
+
+### Braak score - donor-level detection
+
+Detection is positive if a virus occurs in any sampled region. Models adjust for
+age, sex, biobank, and number of regions; diagnosis is omitted because it is
+nearly collinear with Braak score. Some donors span pools, so biobank is the
+donor-level batch covariate.
+
+```{r braak-detection-models}
+braak_min_detect <- 25
+braak_species <- focal_species |>
+  filter(n_detected >= braak_min_detect) |>
+  pull(species)
+
+braak_detection <- donor_pa |>
+  filter(species %in% braak_species, !is.na(braak_score)) |>
+  mutate(sp_short = gsub("^s__", "", species)) |>
+  left_join(comms_dt, by = "species")
+
+braak_models <- set_names(braak_species) |>
+  map(~ glm(
+    present ~ braak_score + scale(age_at_death) + sex + biobank + n_regions,
+    data = filter(braak_detection, species == .x),
+    family = binomial
+  ))
+
+extract_braak <- function(m, sp) {
+  broom::tidy(m) |>
+    filter(term == "braak_score") |>
+    transmute(
+      species = gsub("^s__", "", sp),
+      n_donor = nobs(m),
+      n_detected = sum(model.response(model.frame(m))),
+      OR_per_stage = exp(estimate),
+      conf.low = exp(estimate - 1.96 * std.error),
+      conf.high = exp(estimate + 1.96 * std.error),
+      p.value
+    )
+}
+
+braak_detection_res <- imap_dfr(braak_models, ~ extract_braak(.x, .y)) |>
+  mutate(p.adj = p.adjust(p.value, "BH")) |>
+  arrange(p.value)
+braak_detection_res
+```
+
+```{r}
+write.table(
+  braak_detection_res,
+  file = here::here("summary_tables/braak_virus_presence_glm.csv"),
+  sep = ",",
+  quote = F,
+  row.names = F
+)
+```
+
+```{r braak-detection-sensitivity}
+braak_3region_models <- set_names(braak_species) |>
+  map(~ glm(
+    present ~ braak_score + scale(age_at_death) + sex + biobank,
+    data = filter(braak_detection, species == .x, n_regions == 3),
+    family = binomial
+  ))
+
+braak_3region_res <- imap_dfr(
+  braak_3region_models,
+  ~ extract_braak(.x, .y)
+) |>
+  mutate(p.adj = p.adjust(p.value, "BH")) |>
+  arrange(p.value)
+braak_3region_res
+```
+
+```{r braak-detection-plot, fig.width=8, fig.height=6}
+braak_stage_prev <- braak_detection |>
+  group_by(sp_short, common_name, braak_score) |>
+  summarise(n = n(), n_detected = sum(present), prev = mean(present), .groups = "drop") |>
+  mutate(
+    z = qnorm(0.975),
+    center = (prev + z^2 / (2 * n)) / (1 + z^2 / n),
+    half = z * sqrt(prev * (1 - prev) / n + z^2 / (4 * n^2)) / (1 + z^2 / n),
+    conf.low = pmax(0, center - half),
+    conf.high = pmin(1, center + half)
+  )
+
+braak_predictions <- imap_dfr(braak_models, function(m, sp) {
+  d <- filter(braak_detection, species == sp)
+  nd <- tibble(
+    braak_score = seq(0, 6, by = 0.1),
+    age_at_death = mean(d$age_at_death),
+    sex = factor(names(sort(table(d$sex), decreasing = TRUE))[1], levels = levels(d$sex)),
+    biobank = factor(names(sort(table(d$biobank), decreasing = TRUE))[1],
+                     levels = levels(d$biobank)),
+    n_regions = median(d$n_regions)
+  )
+  pr <- predict(m, newdata = nd, type = "link", se.fit = TRUE)
+  nd |>
+    transmute(
+      sp_short = gsub("^s__", "", sp), braak_score,
+      estimate = plogis(pr$fit),
+      conf.low = plogis(pr$fit - 1.96 * pr$se.fit),
+      conf.high = plogis(pr$fit + 1.96 * pr$se.fit),
+      species = sp
+    )
+}) |>
+  left_join(comms_dt, by = "species")
+
+set.seed(1)
+braak_detection_p <- ggplot() +
+  geom_ribbon(
+    data = braak_predictions,
+    aes(braak_score, ymin = conf.low, ymax = conf.high),
+    fill = "#46ACC8", alpha = 0.2
+  ) +
+  geom_line(
+    data = braak_predictions,
+    aes(braak_score, estimate),
+    color = "#007A95", linewidth = 0.8
+  ) +
+  geom_jitter(
+    data = braak_detection,
+    aes(braak_score, present),
+    width = 0.08, height = 0.025, alpha = 0.15, size = 0.8
+  ) +
+  geom_errorbar(
+    data = braak_stage_prev,
+    aes(braak_score, ymin = conf.low, ymax = conf.high),
+    width = 0.12
+  ) +
+  geom_point(
+    data = braak_stage_prev,
+    aes(braak_score, prev, size = n),
+    shape = 21, fill = "white"
+  ) +
+  facet_wrap(~common_name) +
+  scale_x_continuous(breaks = 0:6) +
+  scale_y_continuous(breaks = seq(0, 1, 0.25), labels = scales::percent) +
+  coord_cartesian(ylim = c(-0.04, 1.04)) +
+  labs(
+    x = "Braak score", y = "Donor-level detection probability",
+    size = "Donors",
+    caption = paste(
+      "Points and intervals: observed prevalence and 95% Wilson CI; line: adjusted prediction",
+      "at mean age, modal sex/biobank, and median number of regions."
+    )
+  ) +
+  theme_bw()
+braak_detection_p
+```
+
+```{r}
+ggsave(
+  here::here("charts/braak_score_donor_detection.pdf"),
+  braak_detection_p,
+  width = 8,
+  height = 6
+)
+```
+
+
 
 ```{r}
 sample_meta |>
@@ -644,7 +909,7 @@ ad_ab_box_p <- ggplot(pos, aes(AD_status, RPKMF)) +
   geom_boxplot(outlier.size = 0.5) +
   geom_jitter(width = 0.15, alpha = 0.3, size = 0.6) +
   scale_y_log10() +
-  facet_wrap(~ sp_short, scales = "free_y") +
+  facet_wrap(~ common_name, scales = "free_y", nrow = 2) +
   labs(x = "AD status", y = "RPKMF (log10, positives only)",
        title = "Abundance by AD status") +
   theme_bw()
@@ -654,7 +919,7 @@ tissue_ab_box_p <- ggplot(pos, aes(tissue, RPKMF)) +
   geom_boxplot(outlier.size = 0.5) +
   geom_jitter(width = 0.15, alpha = 0.3, size = 0.6) +
   scale_y_log10() +
-  facet_wrap(~ sp_short, scales = "free_y") +
+  facet_wrap(~ common_name, scales = "free_y", nrow = 2) +
   labs(x = "Brain region", y = "RPKMF (log10, positives only)",
        title = "Abundance by brain region") +
   theme_bw() +
@@ -954,17 +1219,6 @@ ggsave(
   height = 4
 )
 ```
-
-# Virome VS B&B Scale
-
-Braak and Braak (B&B) scale is a more quantitative measurement of 
-brain pathology such as neurofibrillary tangles
-
-```{r}
-
-```
-
-
 
 # Power / sample-size analysis (for future designs)
 
